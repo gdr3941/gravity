@@ -14,6 +14,8 @@
 #include "util.h"
 
 using namespace std::placeholders;
+using std::cout;
+
 namespace r = ranges;
 
 // Initial Extents for new Rocks
@@ -26,8 +28,14 @@ struct Rock {
     sf::Vector2f pos {};
     sf::Vector2f vel {};
     float radius {0.0f};
-
 };
+
+std::ostream& operator<<(std::ostream& out, const Rock& r)
+{
+    return out << "Rock: pos: " << r.pos.x << "," << r.pos.y
+               << " vel: " << r.vel.x << "," << r.vel.y
+               << " radius: " << r.radius << "\n";
+}
 
 void print(const Rock& rock) {
     fmt::print("Rock: pos: {},{} vel: {},{} radius: {}\n",
@@ -38,9 +46,17 @@ void print(const Rock& rock) {
 
 using Rocks = std::vector<Rock>;
 
-// struct World {
-//     Rocks rocks;
-// };
+std::ostream& operator<<(std::ostream& out, const Rocks& rocks)
+{
+    for(const auto& rock : rocks) {
+        out << rock;
+    }
+    return out;
+}
+
+struct World {
+    Rocks rocks;
+};
 
 Rocks createNewRocks(size_t num)
 {
@@ -67,7 +83,7 @@ auto updatePositionFor(float timeStep)
     return std::bind(updatePosition, _1, timeStep);
 
 }
-void updatePositions(Rocks& rocks, float timeStep)
+void updatePositionSystem(Rocks& rocks, float timeStep)
 {
     for (auto& rock : rocks) {
         rock.pos += rock.vel * timeStep;
@@ -81,18 +97,19 @@ void run()
     window.setFramerateLimit(60);
 
     Rocks rocks {createNewRocks(10)};
-    r::for_each(rocks, print);
-    // updatePositions(rocks, 1.0f);
-    r::for_each(rocks, updatePositionFor(1.0f));
-    fmt::print("---\n");
-    r::for_each(rocks, print);
     
+    // r::for_each(rocks, print);
+    cout << rocks;
+    updatePositionSystem(rocks, 1.0f);
+    // r::for_each(rocks, updatePositionFor(1.0f));
+    fmt::print("---\n");
+    cout << rocks;
     
     sf::Clock clock;
     while (window.isOpen()) {
         sf::Event event;
+        if (event.type == sf::Event::Closed) { window.close(); }
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) { window.close(); }
         }
         float delta = clock.restart().asSeconds();
         if (delta > 1.0) std::cout << "Bad!!\n";
