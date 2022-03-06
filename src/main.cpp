@@ -1,16 +1,20 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
+#include <sys/types.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/System.hpp>
 #include <iostream>
 #include <vector>
+#include "SFML/Graphics/CircleShape.hpp"
+#include "SFML/Graphics/Color.hpp"
+#include "SFML/Graphics/Shape.hpp"
 #include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Window.hpp"
-#include "range/v3/algorithm/for_each.hpp"
-#include <range/v3/algorithm.hpp>
+#include <range/v3/all.hpp>
 #include <functional>
+#include "range/v3/algorithm/generate.hpp"
 #include "util.h"
 
 using namespace std::placeholders;
@@ -18,11 +22,12 @@ using std::cout;
 
 namespace r = ranges;
 
-// Initial Extents for new Rocks
-constexpr float kInitialPosExtent = 10.0f;
-constexpr float kInitialVelExtent = 2.0f;
-constexpr float kInitialRadiusMix = 0.01f;
-constexpr float kInitialRadiusMax = 2.0f; 
+constexpr size_t kNumRocks = 10;
+constexpr float kInitialPosExtent = 45.0f;
+constexpr float kInitialVelExtent = 20.0f;
+constexpr float kInitialRadiusMin = 1.0f;
+constexpr float kInitialRadiusMax = 5.0f;
+constexpr float kInitialViewportScale = 10.0f;
 
 struct Rock {
     sf::Vector2f pos {};
@@ -37,6 +42,17 @@ std::ostream& operator<<(std::ostream& out, const Rock& r)
                << " radius: " << r.radius << "\n";
 }
 
+Rock createRandomRock()
+{
+    Rock rock;
+    rock.pos.x = util::f_rand(-kInitialPosExtent, kInitialPosExtent);
+    rock.pos.y = util::f_rand(-kInitialPosExtent, kInitialPosExtent);
+    rock.vel.x = util::f_rand(-kInitialVelExtent, kInitialVelExtent);
+    rock.vel.y = util::f_rand(-kInitialVelExtent, kInitialVelExtent);
+    rock.radius = util::f_rand(kInitialRadiusMin, kInitialRadiusMax);
+    return rock;
+}
+
 using Rocks = std::vector<Rock>;
 
 std::ostream& operator<<(std::ostream& out, const Rocks& rocks)
@@ -48,53 +64,88 @@ std::ostream& operator<<(std::ostream& out, const Rocks& rocks)
 }
 
 struct World {
-    Rocks rocks;
+    Rocks rocks;  // abstract objects in world
+    std::vector<sf::CircleShape> shapes;  // visual representation
+    float viewportScale {kInitialViewportScale};  // scale factor from game to screen size
+    sf::RenderWindow* window;
 };
 
-Rocks createNewRocks(size_t num)
+sf::CircleShape createShape()
 {
-    Rocks rocks(num);
-    for (auto& rock : rocks) {
-        rock.pos.x = util::f_rand(-kInitialPosExtent, kInitialPosExtent);
-        rock.pos.y = util::f_rand(-kInitialPosExtent, kInitialPosExtent);
-        rock.vel.x = util::f_rand(-kInitialVelExtent, kInitialVelExtent);
-        rock.vel.y = util::f_rand(-kInitialVelExtent, kInitialVelExtent);
-        rock.radius = util::f_rand(kInitialRadiusMix, kInitialRadiusMax);
-    }
-    return rocks;
+    sf::CircleShape shape;
+    shape.setFillColor(sf::Color(255,0,0));
+    return shape;
 }
 
-void updatePositions(Rocks& rocks, float timeStep)
+//
+// Entity Systems
+// 
+
+void updateRockPositionSystem(World& world, float timeStep)
 {
-    for (auto& rock : rocks) {
+    for (auto& rock : world.rocks) {
         rock.pos += rock.vel * timeStep;
     }
+}
+
+void updateShapeSystem(World& world)
+{
+    auto winSize = world.window->getSize();
+    sf::Vector2u winCenter = {winSize.x / 2, winSize.y / 2};
+    for (size_t i = 0; i < world.shapes.size(); i++) {
+        // using sf::View would enable doing this automatically for the view
+        auto screenRadius = world.rocks[i].radius * world.viewportScale;
+        world.shapes[i].setRadius(screenRadius);
+        world.shapes[i].setOrigin(screenRadius, screenRadius);
+        world.shapes[i].setPosition(
+            (world.rocks[i].pos.x * world.viewportScale) + winCenter.x,
+            winCenter.y - (world.rocks[i].pos.y * world.viewportScale));
+    }
+}
+
+//
+// Visualization
+//
+
+void draw(const World& world)
+{
+    for (auto& shape : world.shapes) {
+        world.window->draw(shape);
+    }
+}    
+
+World createWorld(size_t numRocks, sf::RenderWindow* win)
+{
+    World world;
+    world.window = win;
+    world.rocks = Rocks(numRocks);
+    r::generate(world.rocks, createRandomRock);
+    world.shapes = std::vector<sf::CircleShape> (numRocks);
+    r::generate(world.shapes, createShape);
+    updateShapeSystem(world); // set shapes positions based on current rocks
+    return world;
 }
 
 void run()
 {
     fmt::print("Gravity Simulator\n");
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Gravity");
+    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Gravity");
     window.setFramerateLimit(60);
 
-    Rocks rocks {createNewRocks(10)};
-    cout << rocks;
+    World world {createWorld(kNumRocks, &window)};
+    cout << world.rocks;
 
-    updatePositions(rocks, 1.0f);
-    fmt::print("---\n");
-    cout << rocks;
-    
     sf::Clock clock;
     while (window.isOpen()) {
         sf::Event event;
-        if (event.type == sf::Event::Closed) { window.close(); }
         while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) { window.close(); }
         }
         float delta = clock.restart().asSeconds();
-        if (delta > 1.0) std::cout << "Bad!!\n";
-        // Recalc state here based on time delta
+        updateRockPositionSystem(world, delta);
+        updateShapeSystem(world);
         window.clear();
-        // draw new state here
+        draw(world);
         window.display();
     }
 }
