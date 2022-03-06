@@ -1,0 +1,7 @@
+perf.data
+perf.data.old
+.cache/
+.ccls-cache/
+build/**
+bin/**
+/.vscode/
