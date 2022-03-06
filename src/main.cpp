@@ -37,13 +37,6 @@ std::ostream& operator<<(std::ostream& out, const Rock& r)
                << " radius: " << r.radius << "\n";
 }
 
-void print(const Rock& rock) {
-    fmt::print("Rock: pos: {},{} vel: {},{} radius: {}\n",
-               rock.pos.x, rock.pos.y,
-               rock.vel.x, rock.vel.y,
-               rock.radius);
-}
-
 using Rocks = std::vector<Rock>;
 
 std::ostream& operator<<(std::ostream& out, const Rocks& rocks)
@@ -71,19 +64,7 @@ Rocks createNewRocks(size_t num)
     return rocks;
 }
 
-// Trying Alternate Functional vs Imperative approaches for position updates
-
-void updatePosition(Rock& rock, float timeStep)
-{
-    rock.pos += rock.vel * timeStep;
-}
-
-auto updatePositionFor(float timeStep)
-{
-    return std::bind(updatePosition, _1, timeStep);
-
-}
-void updatePositionSystem(Rocks& rocks, float timeStep)
+void updatePositions(Rocks& rocks, float timeStep)
 {
     for (auto& rock : rocks) {
         rock.pos += rock.vel * timeStep;
@@ -97,11 +78,9 @@ void run()
     window.setFramerateLimit(60);
 
     Rocks rocks {createNewRocks(10)};
-    
-    // r::for_each(rocks, print);
     cout << rocks;
-    updatePositionSystem(rocks, 1.0f);
-    // r::for_each(rocks, updatePositionFor(1.0f));
+
+    updatePositions(rocks, 1.0f);
     fmt::print("---\n");
     cout << rocks;
     
