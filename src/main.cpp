@@ -11,18 +11,17 @@
 #include <functional>
 #include "util.h"
 
-using std::cout;
 namespace r = ranges;
 
-constexpr size_t kNumRocks = 10;
+constexpr size_t kNumRocks = 100;
 constexpr float kInitialPosExtent = 45.0f;
 constexpr float kInitialVelExtent = 20.0f;
 constexpr float kInitialRadiusMin = 1.0f;
 constexpr float kInitialRadiusMax = 5.0f;
-constexpr float kInitialViewportScale = 10.0f;
+constexpr float kInitialViewportScale = 5.0f;
 
 //
-// Rock - abstract entity in our simulation
+// Rock - Abstract Entity in our Simulation
 //
 
 struct Rock {
@@ -85,7 +84,6 @@ void updateShapeSystem(World& world)
     auto winSize = world.window->getSize();
     sf::Vector2u winCenter = {winSize.x / 2, winSize.y / 2};
     for (size_t i = 0; i < world.shapes.size(); i++) {
-        // using sf::View would enable doing this automatically for the view
         auto screenRadius = world.rocks[i].radius * world.viewportScale;
         world.shapes[i].setRadius(screenRadius);
         world.shapes[i].setOrigin(screenRadius, screenRadius);
@@ -140,7 +138,6 @@ void run()
     window.setFramerateLimit(60);
 
     World world {createWorld(kNumRocks, &window)};
-    cout << world.rocks;
 
     sf::Clock clock;
     while (window.isOpen()) {
