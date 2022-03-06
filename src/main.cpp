@@ -53,9 +53,7 @@ Rock createRandomRock()
     return rock;
 }
 
-using Rocks = std::vector<Rock>;
-
-std::ostream& operator<<(std::ostream& out, const Rocks& rocks)
+std::ostream& operator<<(std::ostream& out, const std::vector<Rock>& rocks)
 {
     for(const auto& rock : rocks) {
         out << rock;
@@ -64,8 +62,8 @@ std::ostream& operator<<(std::ostream& out, const Rocks& rocks)
 }
 
 struct World {
-    Rocks rocks;  // abstract objects in world
-    std::vector<sf::CircleShape> shapes;  // visual representation
+    std::vector<Rock> rocks;  // abstract objects in world
+    std::vector<sf::CircleShape> shapes;  // screen object cache
     float viewportScale {kInitialViewportScale};  // scale factor from game to screen size
     sf::RenderWindow* window;
 };
@@ -118,9 +116,9 @@ World createWorld(size_t numRocks, sf::RenderWindow* win)
 {
     World world;
     world.window = win;
-    world.rocks = Rocks(numRocks);
+    world.rocks = std::vector<Rock>(numRocks);
     r::generate(world.rocks, createRandomRock);
-    world.shapes = std::vector<sf::CircleShape> (numRocks);
+    world.shapes = std::vector<sf::CircleShape>(numRocks);
     r::generate(world.shapes, createShape);
     updateShapeSystem(world); // set shapes positions based on current rocks
     return world;
