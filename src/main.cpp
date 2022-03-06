@@ -1,25 +1,17 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
-#include <sys/types.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/System.hpp>
 #include <iostream>
 #include <vector>
-#include "SFML/Graphics/CircleShape.hpp"
-#include "SFML/Graphics/Color.hpp"
-#include "SFML/Graphics/Shape.hpp"
-#include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Window.hpp"
 #include <range/v3/all.hpp>
 #include <functional>
-#include "range/v3/algorithm/generate.hpp"
 #include "util.h"
 
-using namespace std::placeholders;
 using std::cout;
-
 namespace r = ranges;
 
 constexpr size_t kNumRocks = 10;
@@ -28,6 +20,10 @@ constexpr float kInitialVelExtent = 20.0f;
 constexpr float kInitialRadiusMin = 1.0f;
 constexpr float kInitialRadiusMax = 5.0f;
 constexpr float kInitialViewportScale = 10.0f;
+
+//
+// Rock - abstract entity in our simulation
+//
 
 struct Rock {
     sf::Vector2f pos {};
@@ -61,6 +57,10 @@ std::ostream& operator<<(std::ostream& out, const std::vector<Rock>& rocks)
     return out;
 }
 
+//
+// Simulation World that holds Entities and settings
+//
+
 struct World {
     std::vector<Rock> rocks;  // abstract objects in world
     std::vector<sf::CircleShape> shapes;  // screen object cache
@@ -68,12 +68,6 @@ struct World {
     sf::RenderWindow* window;
 };
 
-sf::CircleShape createShape()
-{
-    sf::CircleShape shape;
-    shape.setFillColor(sf::Color(255,0,0));
-    return shape;
-}
 
 //
 // Entity Systems
@@ -105,12 +99,23 @@ void updateShapeSystem(World& world)
 // Visualization
 //
 
+sf::CircleShape createCircle()
+{
+    sf::CircleShape circle;
+    circle.setFillColor(sf::Color(255,0,0));
+    return circle;
+}
+
 void draw(const World& world)
 {
     for (auto& shape : world.shapes) {
         world.window->draw(shape);
     }
-}    
+}
+
+//
+// Initial Setup
+//
 
 World createWorld(size_t numRocks, sf::RenderWindow* win)
 {
@@ -119,10 +124,14 @@ World createWorld(size_t numRocks, sf::RenderWindow* win)
     world.rocks = std::vector<Rock>(numRocks);
     r::generate(world.rocks, createRandomRock);
     world.shapes = std::vector<sf::CircleShape>(numRocks);
-    r::generate(world.shapes, createShape);
+    r::generate(world.shapes, createCircle);
     updateShapeSystem(world); // set shapes positions based on current rocks
     return world;
 }
+
+//
+// Run Loop
+//
 
 void run()
 {
