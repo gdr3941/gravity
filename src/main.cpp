@@ -1,14 +1,9 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 #include <SFML/Graphics.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/Texture.hpp>
 #include <SFML/System.hpp>
 #include <iostream>
 #include <vector>
-#include "SFML/Graphics/CircleShape.hpp"
-#include "SFML/Graphics/Color.hpp"
-#include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Window.hpp"
 #include <range/v3/all.hpp>
 #include <functional>
