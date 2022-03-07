@@ -6,6 +6,7 @@
 #include <SFML/System.hpp>
 #include <iostream>
 #include <vector>
+#include "SFML/Graphics/CircleShape.hpp"
 #include "SFML/Graphics/Color.hpp"
 #include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Window.hpp"
@@ -171,8 +172,7 @@ World createWorld(size_t numRocks, sf::RenderWindow* win)
     world.window = win;
     world.rocks = std::vector<Rock>(numRocks);
     r::generate(world.rocks, createRandomRock);
-    world.shapes = std::vector<sf::CircleShape>(numRocks);
-    r::generate(world.shapes, createCircle);
+    world.shapes = std::vector<sf::CircleShape>(numRocks, sf::CircleShape {});
     updateShapeSystem(world); // set shapes positions based on current rocks
     return world;
 }
