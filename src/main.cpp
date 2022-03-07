@@ -6,9 +6,11 @@
 #include <SFML/System.hpp>
 #include <iostream>
 #include <vector>
+#include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Window.hpp"
 #include <range/v3/all.hpp>
 #include <functional>
+#include <cmath>
 #include "util.h"
 
 namespace r = ranges;
@@ -67,6 +69,39 @@ struct World {
     sf::RenderWindow* window;
 };
 
+//
+// Helpers for Systems
+//
+
+float distanceBetween(const sf::Vector2f& a, const sf::Vector2f& b)
+{
+    return sqrt((a.x - b.x) * (a.x - b.x) +
+                (a.y - b.y) * (a.y - b.y));
+}
+
+/// Returns true if in contact and still moving towards one another
+bool isColliding(const Rock& a, const Rock& b)
+{
+    float currentDistance = distanceBetween(a.pos, b.pos);
+    if (currentDistance > (a.radius + b.radius)) return false;
+    // Now check if still moving closer to one another
+    // by using a very small time increment
+    sf::Vector2f future_a_pos = a.pos + (a.vel * 0.001f);
+    sf::Vector2f future_b_pos = b.pos + (b.vel * 0.001f);
+    float futureDistance = distanceBetween(future_a_pos, future_b_pos);
+    return (futureDistance < currentDistance);
+}
+
+
+void updateForCollision(Rock& a, Rock& b)
+{
+    float a_mass = a.radius * a.radius;
+    float b_mass = b.radius * b.radius;
+    sf::Vector2f a_new_vel = (a.vel * (a_mass - b_mass) + (2.0f * b_mass * b.vel)) / (a_mass + b_mass);
+    sf::Vector2f b_new_vel = (b.vel * (b_mass - a_mass) + (2.0f * a_mass * a.vel)) / (a_mass + b_mass);
+    a.vel = a_new_vel;
+    b.vel = b_new_vel;
+}
 
 //
 // Entity Systems
@@ -90,6 +125,17 @@ void updateShapeSystem(World& world)
         world.shapes[i].setPosition(
             (world.rocks[i].pos.x * world.viewportScale) + winCenter.x,
             winCenter.y - (world.rocks[i].pos.y * world.viewportScale));
+    }
+}
+
+void updateCollisionSystem(World& world)
+{
+    for (size_t i = 0; i < world.rocks.size() - 1; i++) {
+        for (size_t j = i + 1; j < world.rocks.size(); j++) {
+            if (isColliding(world.rocks[i], world.rocks[j])) {
+                updateForCollision(world.rocks[i], world.rocks[j]);
+            }
+        }
     }
 }
 
@@ -146,6 +192,7 @@ void run()
             if (event.type == sf::Event::Closed) { window.close(); }
         }
         float delta = clock.restart().asSeconds();
+        updateCollisionSystem(world);
         updateRockPositionSystem(world, delta);
         updateShapeSystem(world);
         window.clear();
