@@ -6,10 +6,12 @@
 #include <SFML/System.hpp>
 #include <iostream>
 #include <vector>
+#include "SFML/Graphics/Color.hpp"
 #include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Window.hpp"
 #include <range/v3/all.hpp>
 #include <functional>
+#include <algorithm>
 #include <cmath>
 #include "util.h"
 
@@ -95,9 +97,17 @@ void updateForCollision(Rock& a, Rock& b)
     b.vel = b_new_vel;
 }
 
+sf::Color colorFromVelocity(const Rock& rock)
+{
+    float vel_percent = ((rock.vel.x * rock.vel.x + rock.vel.y * rock.vel.y)
+                         / (2 * kInitialVelExtent * kInitialVelExtent));
+    int red_level = std::clamp((int)(vel_percent * 255), 0, 255);
+    return sf::Color(red_level, 0, 255 - red_level);
+}
+
 //
 // Entity Systems
-// 
+//
 
 void updateRockPositionSystem(World& world, float timeStep)
 {
@@ -118,6 +128,7 @@ void updateShapeSystem(World& world)
         world.shapes[i].setPosition(
             (world.rocks[i].pos.x * world.viewportScale) + winCenter.x,
             winCenter.y - (world.rocks[i].pos.y * world.viewportScale));
+        world.shapes[i].setFillColor(colorFromVelocity(world.rocks[i]));
     }
 }
 
