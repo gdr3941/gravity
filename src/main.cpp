@@ -50,14 +50,6 @@ Rock createRandomRock()
     return rock;
 }
 
-std::ostream& operator<<(std::ostream& out, const std::vector<Rock>& rocks)
-{
-    for(const auto& rock : rocks) {
-        out << rock;
-    }
-    return out;
-}
-
 //
 // Simulation World that holds Entities and settings
 //
@@ -116,6 +108,7 @@ void updateRockPositionSystem(World& world, float timeStep)
 
 void updateShapeSystem(World& world)
 {
+    // look into using a sf::view instead of my scaling below
     auto winSize = world.window->getSize();
     sf::Vector2u winCenter = {winSize.x / 2, winSize.y / 2};
     for (size_t i = 0; i < world.shapes.size(); i++) {
