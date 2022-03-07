@@ -98,9 +98,9 @@ void updateForCollision(Rock& a, Rock& b)
     b.vel = b_new_vel;
 }
 
-sf::Color colorFromVelocity(const Rock& rock)
+sf::Color colorFromVelocity(const sf::Vector2f& vel)
 {
-    float vel_percent = ((rock.vel.x * rock.vel.x + rock.vel.y * rock.vel.y)
+    float vel_percent = ((vel.x * vel.x + vel.y * vel.y)
                          / (2 * kInitialVelExtent * kInitialVelExtent));
     int red_level = std::clamp((int)(vel_percent * 255), 0, 255);
     return sf::Color(red_level, 0, 255 - red_level);
@@ -129,7 +129,7 @@ void updateShapeSystem(World& world)
         world.shapes[i].setPosition(
             (world.rocks[i].pos.x * world.viewportScale) + winCenter.x,
             winCenter.y - (world.rocks[i].pos.y * world.viewportScale));
-        world.shapes[i].setFillColor(colorFromVelocity(world.rocks[i]));
+        world.shapes[i].setFillColor(colorFromVelocity(world.rocks[i].vel));
     }
 }
 
