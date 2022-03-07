@@ -6,5 +6,6 @@
                                           "--pch-storage=memory"
                                           "--background-index"
                                           "-j=4"
+                                          "--header-insertion=never"
                                           )))))
 
