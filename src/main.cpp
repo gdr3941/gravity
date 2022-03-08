@@ -130,15 +130,8 @@ void updateShapeSystem(World& world)
 
 void updateCollisionSystem(World& world)
 {
-    // for (size_t i = 0; i < world.rocks.size() - 1; i++) {
-    //     for (size_t j = i + 1; j < world.rocks.size(); j++) {
-    //         if (isColliding(world.rocks[i], world.rocks[j])) {
-    //             updateForCollision(world.rocks[i], world.rocks[j]);
-    //         }
-    //     }
-    // }
-    for (auto i = begin(world.rocks); i < (end(world.rocks) - 1); i++) {
-        for (auto j = i + 1; j < end(world.rocks); j++) {
+    for (auto i = begin(world.rocks); i < (end(world.rocks) - 1); ++i) {
+        for (auto j = i + 1; j < end(world.rocks); ++j) {
             if (isColliding(*i, *j)) {
                 updateForCollision(*i, *j);
             }
