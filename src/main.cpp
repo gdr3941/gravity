@@ -3,7 +3,9 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <iostream>
+#include <utility>
 #include <vector>
+#include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Window.hpp"
 #include <range/v3/all.hpp>
 #include <functional>
@@ -18,7 +20,7 @@ constexpr float kInitialPosExtent = 45.0f;
 constexpr float kInitialVelExtent = 20.0f;
 constexpr float kInitialRadiusMin = 1.0f;
 constexpr float kInitialRadiusMax = 5.0f;
-constexpr float kInitialViewportScale = 5.0f;
+constexpr float kInitialViewportScale = 3.0f;
 
 //
 // Rock - Abstract Entity in our Simulation
@@ -37,7 +39,7 @@ std::ostream& operator<<(std::ostream& out, const Rock& r)
                << " radius: " << r.radius << "\n";
 }
 
-Rock createRandomRock()
+Rock newRandomRock()
 {
     Rock rock;
     rock.pos.x = util::f_rand(-kInitialPosExtent, kInitialPosExtent);
@@ -99,6 +101,36 @@ sf::Color colorFromVelocity(const sf::Vector2f& vel)
                          / (2 * kInitialVelExtent * kInitialVelExtent));
     int red_level = std::clamp((int)(vel_percent * 255), 0, 255);
     return sf::Color(red_level, 0, 255 - red_level);
+}
+
+float mass(const Rock& rock)
+{
+    return rock.radius * rock.radius;
+}
+
+/// returns gravity acceleration components for each object due to gravitation
+std::pair<sf::Vector2f, sf::Vector2f> gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
+{
+    float distance2 = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) + (a.pos.y - b.pos.y) * (a.pos.y - b.pos.y);
+    float acc = gConst / distance2;
+    float t_acc_a = acc * mass(b);  // total acceleration on a
+    float t_acc_b = acc * mass(a);  // total acceleration on b
+    // Now break down totals into x & y components
+    sf::Vector2f a_vec = b.pos - a.pos;
+    sf::Vector2f b_vec = a.pos - b.pos;
+    double a_radians = atan2(a_vec.y, a_vec.x);
+    double b_radians = atan2(b_vec.y, b_vec.x);
+    sf::Vector2f acc_a {static_cast<float>(cos(a_radians)*t_acc_a), static_cast<float>(sin(a_radians)*t_acc_a)};
+    sf::Vector2f acc_b {static_cast<float>(cos(b_radians)*t_acc_b), static_cast<float>(sin(b_radians)*t_acc_b)};
+    return {acc_a, acc_b};
+}
+
+void testGrav()
+{
+    Rock a {.pos = {-0.1,-0.1}, .radius = 1.0f};
+    Rock b {.pos = {0,0}, .radius = 100.0f};
+    auto [acc_a, acc_b] = gravityAccelComponents(a, b, 6.67408e-11);
+    fmt::print("a.x {} a.y {} b.x {} b.y {}", acc_a.x, acc_a.y, acc_b.x, acc_b.y);
 }
 
 //
@@ -166,7 +198,7 @@ World createWorld(size_t numRocks, sf::RenderWindow* win)
     World world;
     world.window = win;
     world.rocks = std::vector<Rock>(numRocks);
-    r::generate(world.rocks, createRandomRock);
+    r::generate(world.rocks, newRandomRock);
     world.shapes = std::vector<sf::CircleShape>(numRocks, sf::CircleShape {});
     updateShapeSystem(world); // set shapes positions based on current rocks
     return world;
