@@ -60,9 +60,8 @@ struct World {
     float viewportScale {kInitialViewportScale};  // scale factor from game to screen size
     sf::RenderWindow* window;
 
-    explicit World(size_t numRocks, sf::RenderWindow* win):
-        rocks(numRocks), shapes(numRocks), viewportScale {kInitialViewportScale},
-        window {win} {};
+    explicit World(size_t numRocks, sf::RenderWindow* win)
+        : rocks(numRocks), shapes(numRocks), window {win} {};
 };
 
 //
