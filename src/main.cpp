@@ -27,8 +27,8 @@ constexpr float kInitialViewportScale = 3.0f;
 //
 
 struct Rock {
-    sf::Vector2f pos {};
-    sf::Vector2f vel {};
+    sf::Vector2f pos {0,0};
+    sf::Vector2f vel {0,0};
     float radius {0.0f};
 };
 
@@ -59,6 +59,10 @@ struct World {
     std::vector<sf::CircleShape> shapes;  // screen object cache
     float viewportScale {kInitialViewportScale};  // scale factor from game to screen size
     sf::RenderWindow* window;
+
+    explicit World(size_t numRocks, sf::RenderWindow* win):
+        rocks(numRocks), shapes(numRocks), viewportScale {kInitialViewportScale},
+        window {win} {};
 };
 
 //
@@ -109,9 +113,11 @@ float mass(const Rock& rock)
 }
 
 /// returns gravity acceleration components for each object due to gravitation
-std::pair<sf::Vector2f, sf::Vector2f> gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
+std::pair<sf::Vector2f, sf::Vector2f>
+gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
 {
-    float distance2 = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) + (a.pos.y - b.pos.y) * (a.pos.y - b.pos.y);
+    float distance2 = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) +
+        (a.pos.y - b.pos.y) * (a.pos.y - b.pos.y);
     float acc = gConst / distance2;
     float t_acc_a = acc * mass(b);  // total acceleration on a
     float t_acc_b = acc * mass(a);  // total acceleration on b
@@ -120,8 +126,10 @@ std::pair<sf::Vector2f, sf::Vector2f> gravityAccelComponents(const Rock& a, cons
     sf::Vector2f b_vec = a.pos - b.pos;
     double a_radians = atan2(a_vec.y, a_vec.x);
     double b_radians = atan2(b_vec.y, b_vec.x);
-    sf::Vector2f acc_a {static_cast<float>(cos(a_radians)*t_acc_a), static_cast<float>(sin(a_radians)*t_acc_a)};
-    sf::Vector2f acc_b {static_cast<float>(cos(b_radians)*t_acc_b), static_cast<float>(sin(b_radians)*t_acc_b)};
+    sf::Vector2f acc_a {static_cast<float>(cos(a_radians)*t_acc_a),
+        static_cast<float>(sin(a_radians)*t_acc_a)};
+    sf::Vector2f acc_b {static_cast<float>(cos(b_radians)*t_acc_b),
+        static_cast<float>(sin(b_radians)*t_acc_b)};
     return {acc_a, acc_b};
 }
 
@@ -195,11 +203,8 @@ void draw(const World& world)
 
 World createWorld(size_t numRocks, sf::RenderWindow* win)
 {
-    World world;
-    world.window = win;
-    world.rocks = std::vector<Rock>(numRocks);
+    World world(numRocks, win);
     r::generate(world.rocks, newRandomRock);
-    world.shapes = std::vector<sf::CircleShape>(numRocks, sf::CircleShape {});
     updateShapeSystem(world); // set shapes positions based on current rocks
     return world;
 }
@@ -214,7 +219,7 @@ void run()
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Gravity");
     window.setFramerateLimit(60);
 
-    World world {createWorld(kNumRocks, &window)};
+    World world = createWorld(kNumRocks, &window);
 
     sf::Clock clock;
     while (window.isOpen()) {
