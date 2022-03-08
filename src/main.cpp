@@ -61,7 +61,8 @@ struct World {
     sf::RenderWindow* window;
 
     explicit World(size_t numRocks, sf::RenderWindow* win)
-        : rocks(numRocks), shapes(numRocks), window {win} {};
+        : rocks(numRocks), shapes(numRocks), viewportScale {kInitialViewportScale},
+          window {win} {};
 };
 
 //
@@ -123,18 +124,16 @@ gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
     // Now break down totals into x & y components
     sf::Vector2f a_vec = b.pos - a.pos;
     sf::Vector2f b_vec = a.pos - b.pos;
-    double a_radians = atan2(a_vec.y, a_vec.x);
-    double b_radians = atan2(b_vec.y, b_vec.x);
-    sf::Vector2f acc_a {static_cast<float>(cos(a_radians)*t_acc_a),
-        static_cast<float>(sin(a_radians)*t_acc_a)};
-    sf::Vector2f acc_b {static_cast<float>(cos(b_radians)*t_acc_b),
-        static_cast<float>(sin(b_radians)*t_acc_b)};
+    float a_radians = atan2(a_vec.y, a_vec.x);
+    float b_radians = atan2(b_vec.y, b_vec.x);
+    sf::Vector2f acc_a {cos(a_radians)*t_acc_a, sin(a_radians)*t_acc_a};
+    sf::Vector2f acc_b {cos(b_radians)*t_acc_b, sin(b_radians)*t_acc_b};
     return {acc_a, acc_b};
 }
 
 void testGrav()
 {
-    Rock a {.pos = {-0.1,-0.1}, .radius = 1.0f};
+    Rock a {.pos = {-0.1,0.0}, .radius = 1.0f};
     Rock b {.pos = {0,0}, .radius = 100.0f};
     auto [acc_a, acc_b] = gravityAccelComponents(a, b, 6.67408e-11);
     fmt::print("a.x {} a.y {} b.x {} b.y {}", acc_a.x, acc_a.y, acc_b.x, acc_b.y);
@@ -219,6 +218,7 @@ void run()
     window.setFramerateLimit(60);
 
     World world = createWorld(kNumRocks, &window);
+    testGrav();
 
     sf::Clock clock;
     while (window.isOpen()) {
