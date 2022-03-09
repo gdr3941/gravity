@@ -19,8 +19,9 @@ constexpr size_t kNumRocks = 100;
 constexpr float kInitialPosExtent = 45.0f;
 constexpr float kInitialVelExtent = 20.0f;
 constexpr float kInitialRadiusMin = 1.0f;
-constexpr float kInitialRadiusMax = 5.0f;
+constexpr float kInitialRadiusMax = 6.0f;
 constexpr float kInitialViewportScale = 3.0f;
+constexpr float kGravity = 6.67408f;
 
 //
 // Rock - Abstract Entity in our Simulation
@@ -126,8 +127,8 @@ gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
     sf::Vector2f b_vec = a.pos - b.pos;
     float a_radians = atan2(a_vec.y, a_vec.x);
     float b_radians = atan2(b_vec.y, b_vec.x);
-    sf::Vector2f acc_a {cos(a_radians)*t_acc_a, sin(a_radians)*t_acc_a};
-    sf::Vector2f acc_b {cos(b_radians)*t_acc_b, sin(b_radians)*t_acc_b};
+    sf::Vector2f acc_a {static_cast<float>(cos(a_radians)*t_acc_a), static_cast<float>(sin(a_radians)*t_acc_a)};
+    sf::Vector2f acc_b {static_cast<float>(cos(b_radians)*t_acc_b), static_cast<float>(sin(b_radians)*t_acc_b)};
     return {acc_a, acc_b};
 }
 
@@ -168,18 +169,19 @@ void updateShapeSystem(World& world)
 
 void updateCollisionSystem(World& world)
 {
-    // for (auto i = begin(world.rocks); i < (end(world.rocks) - 1); ++i) {
-    //     for (auto j = i + 1; j < end(world.rocks); ++j) {
-    //         if (isColliding(*i, *j)) {
-    //             updateForCollision(*i, *j);
-    //         }
-    //     }
-    // }
     util::for_distinct_pairs(world.rocks, [](Rock& a, Rock& b){
         if (isColliding(a, b)) { updateForCollision(a, b); };
     });
 }
 
+void updateGravitySystem(World& world, float timestep)
+{
+    util::for_distinct_pairs(world.rocks, [=](Rock& a, Rock& b){
+        auto [a_acc, b_acc] = gravityAccelComponents(a, b, kGravity);
+        a.vel += (a_acc * timestep);
+        b.vel += (b_acc * timestep);
+    });
+}
 //
 // Visualization
 //
@@ -234,6 +236,7 @@ void run()
         }
         float delta = clock.restart().asSeconds();
         updateCollisionSystem(world);
+        updateGravitySystem(world, delta);
         updateRockPositionSystem(world, delta);
         updateShapeSystem(world);
         window.clear();
