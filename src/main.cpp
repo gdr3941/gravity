@@ -168,13 +168,16 @@ void updateShapeSystem(World& world)
 
 void updateCollisionSystem(World& world)
 {
-    for (auto i = begin(world.rocks); i < (end(world.rocks) - 1); ++i) {
-        for (auto j = i + 1; j < end(world.rocks); ++j) {
-            if (isColliding(*i, *j)) {
-                updateForCollision(*i, *j);
-            }
-        }
-    }
+    // for (auto i = begin(world.rocks); i < (end(world.rocks) - 1); ++i) {
+    //     for (auto j = i + 1; j < end(world.rocks); ++j) {
+    //         if (isColliding(*i, *j)) {
+    //             updateForCollision(*i, *j);
+    //         }
+    //     }
+    // }
+    util::for_distinct_pairs(world.rocks, [](Rock& a, Rock& b){
+        if (isColliding(a, b)) { updateForCollision(a, b); };
+    });
 }
 
 //
@@ -217,6 +220,9 @@ void run()
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Gravity");
     window.setFramerateLimit(60);
 
+    std::vector<int> v {1,2,3};
+    util::for_distinct_pairs(v, [](auto& a, auto& b){std::cout << a << "," << b <<"\n";});
+        
     World world = createWorld(kNumRocks, &window);
     testGrav();
 

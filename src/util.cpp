@@ -1,5 +1,6 @@
 #include "util.h"
 #include <random>
+#include <vector>
 
 namespace util {
 
