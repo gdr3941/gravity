@@ -17,11 +17,11 @@ namespace r = ranges;
 
 constexpr size_t kNumRocks = 100;
 constexpr float kInitialPosExtent = 45.0f;
-constexpr float kInitialVelExtent = 20.0f;
+constexpr float kInitialVelExtent = 15.0f;
 constexpr float kInitialRadiusMin = 1.0f;
 constexpr float kInitialRadiusMax = 6.0f;
 constexpr float kInitialViewportScale = 3.0f;
-constexpr float kGravity = 6.67408f;
+constexpr float kGravity = 6.67408e-1f;
 
 //
 // Rock - Abstract Entity in our Simulation
@@ -110,7 +110,7 @@ sf::Color colorFromVelocity(const sf::Vector2f& vel)
 
 float mass(const Rock& rock)
 {
-    return rock.radius * rock.radius;
+    return rock.radius * rock.radius * rock.radius;
 }
 
 /// returns gravity acceleration components for each object due to gravitation
@@ -144,6 +144,22 @@ void testGrav()
 // Entity Systems
 //
 
+void updateCollisionSystem(World& world)
+{
+    util::for_distinct_pairs(world.rocks, [](Rock& a, Rock& b){
+        if (isColliding(a, b)) { updateForCollision(a, b); };
+    });
+}
+
+void updateGravitySystem(World& world, float timestep)
+{
+    util::for_distinct_pairs(world.rocks, [timestep](Rock& a, Rock& b){
+        auto [a_acc, b_acc] = gravityAccelComponents(a, b, kGravity);
+        a.vel += (a_acc * timestep);
+        b.vel += (b_acc * timestep);
+    });
+}
+
 void updateRockPositionSystem(World& world, float timeStep)
 {
     for (auto& rock : world.rocks) {
@@ -167,21 +183,6 @@ void updateShapeSystem(World& world)
     }
 }
 
-void updateCollisionSystem(World& world)
-{
-    util::for_distinct_pairs(world.rocks, [](Rock& a, Rock& b){
-        if (isColliding(a, b)) { updateForCollision(a, b); };
-    });
-}
-
-void updateGravitySystem(World& world, float timestep)
-{
-    util::for_distinct_pairs(world.rocks, [=](Rock& a, Rock& b){
-        auto [a_acc, b_acc] = gravityAccelComponents(a, b, kGravity);
-        a.vel += (a_acc * timestep);
-        b.vel += (b_acc * timestep);
-    });
-}
 //
 // Visualization
 //
