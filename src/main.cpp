@@ -186,13 +186,6 @@ void updateGravitySystem(World& world, float timestep)
 // Visualization
 //
 
-sf::CircleShape createCircle()
-{
-    sf::CircleShape circle;
-    circle.setFillColor(sf::Color(255,0,0));
-    return circle;
-}
-
 void draw(const World& world)
 {
     for (auto& shape : world.shapes) {
@@ -224,7 +217,6 @@ void handleEvents(World& world)
     }
 }
 
-// 
 //
 // Initial Setup
 //
