@@ -201,6 +201,31 @@ void draw(const World& world)
 }
 
 //
+// Event Handling
+//
+
+void handleEvents(World& world)
+{
+    sf::Event event;
+    while (world.window->pollEvent(event)) {
+        if (event.type == sf::Event::Closed) { world.window->close(); }
+        if (event.type == sf::Event::KeyPressed) {
+            switch (event.key.code) {
+            case sf::Keyboard::Up:
+                world.viewportScale *= 1.2;
+                break;
+            case sf::Keyboard::Down:
+                world.viewportScale *= 0.8;
+                break;
+            default:
+                break;
+            }
+        }
+    }
+}
+
+// 
+//
 // Initial Setup
 //
 
@@ -226,10 +251,7 @@ void run()
 
     sf::Clock clock;
     while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) { window.close(); }
-        }
+        handleEvents(world);
         float delta = clock.restart().asSeconds();
         updateCollisionSystem(world);
         updateGravitySystem(world, delta);
