@@ -222,11 +222,7 @@ void run()
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Gravity");
     window.setFramerateLimit(60);
 
-    std::vector<int> v {1,2,3};
-    util::for_distinct_pairs(v, [](auto& a, auto& b){std::cout << a << "," << b <<"\n";});
-        
     World world = createWorld(kNumRocks, &window);
-    testGrav();
 
     sf::Clock clock;
     while (window.isOpen()) {
