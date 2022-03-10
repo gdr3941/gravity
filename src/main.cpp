@@ -20,7 +20,6 @@ constexpr float kInitialPosExtent = 45.0f;
 constexpr float kInitialVelExtent = 10.0f;
 constexpr float kInitialRadiusMin = 1.0f;
 constexpr float kInitialRadiusMax = 6.0f;
-constexpr float kInitialViewportScale = 3.0f;
 constexpr float kGravity = 6.67408e-2f;
 
 //
@@ -58,7 +57,6 @@ Rock newRandomRock()
 struct World {
     std::vector<Rock> rocks;  // abstract objects in world
     std::vector<sf::CircleShape> shapes;  // screen object cache
-    float viewportScale {kInitialViewportScale};  // scale factor from game to screen size
     sf::RenderWindow* window;
 
     explicit World(size_t numRocks, sf::RenderWindow* win)
@@ -172,12 +170,11 @@ void updateShapeSystem(World& world)
     auto winSize = world.window->getSize();
     sf::Vector2u winCenter = {winSize.x / 2, winSize.y / 2};
     for (size_t i = 0; i < world.shapes.size(); i++) {
-        auto screenRadius = world.rocks[i].radius * world.viewportScale;
+        auto screenRadius = world.rocks[i].radius;
         world.shapes[i].setRadius(screenRadius);
         world.shapes[i].setOrigin(screenRadius, screenRadius);
-        world.shapes[i].setPosition(
-            (world.rocks[i].pos.x * world.viewportScale) + winCenter.x,
-            winCenter.y - (world.rocks[i].pos.y * world.viewportScale));
+        world.shapes[i].setPosition(world.rocks[i].pos.x + winCenter.x,
+            winCenter.y - world.rocks[i].pos.y);
         world.shapes[i].setFillColor(colorFromVelocity(world.rocks[i].vel));
     }
 }
@@ -217,15 +214,13 @@ void handleEvents(World& world)
         if (event.type == sf::Event::KeyPressed) {
             switch (event.key.code) {
             case sf::Keyboard::Up:
-                world.viewportScale *= 1.2;
                 break;
             case sf::Keyboard::Down:
-                world.viewportScale *= 0.8;
-                break;
-            case sf::Keyboard::LBracket:
-                scaleView(world, 0.8);
                 break;
             case sf::Keyboard::RBracket:
+                scaleView(world, 0.8);
+                break;
+            case sf::Keyboard::LBracket:
                 scaleView(world, 1.2);
                 break;
             default:
@@ -260,6 +255,7 @@ void run()
     window.setFramerateLimit(60);
 
     World world = createWorld(kNumRocks, &window);
+    scaleView(world, 0.4);
 
     sf::Clock clock;
     while (window.isOpen()) {
