@@ -58,9 +58,6 @@ struct World {
     std::vector<Rock> rocks;  // abstract objects in world
     std::vector<sf::CircleShape> shapes;  // screen object cache
     sf::RenderWindow* window;
-
-    explicit World(size_t numRocks, sf::RenderWindow* win)
-        : rocks(numRocks), shapes(numRocks), window {win} {};
 };
 
 //
@@ -87,6 +84,7 @@ bool isColliding(const Rock& a, const Rock& b)
 }
 
 
+/// Update velocity vectors from a collision to bounce away
 void updateForCollision(Rock& a, Rock& b)
 {
     float a_mass = a.radius * a.radius;
@@ -129,14 +127,6 @@ gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
     return {acc_a, acc_b};
 }
 
-void testGrav()
-{
-    Rock a {.pos = {-0.1,0.0}, .radius = 1.0f};
-    Rock b {.pos = {0,0}, .radius = 100.0f};
-    auto [acc_a, acc_b] = gravityAccelComponents(a, b, 6.67408e-11);
-    fmt::print("a.x {} a.y {} b.x {} b.y {}", acc_a.x, acc_a.y, acc_b.x, acc_b.y);
-}
-
 //
 // Entity Systems
 //
@@ -166,15 +156,8 @@ void updateRockPositionSystem(World& world, float timeStep)
 
 void updateShapeSystem(World& world)
 {
-    // look into using a sf::view instead of my scaling below
-    auto winSize = world.window->getSize();
-    sf::Vector2u winCenter = {winSize.x / 2, winSize.y / 2};
     for (size_t i = 0; i < world.shapes.size(); i++) {
-        auto screenRadius = world.rocks[i].radius;
-        world.shapes[i].setRadius(screenRadius);
-        world.shapes[i].setOrigin(screenRadius, screenRadius);
-        world.shapes[i].setPosition(world.rocks[i].pos.x + winCenter.x,
-            winCenter.y - world.rocks[i].pos.y);
+        world.shapes[i].setPosition(world.rocks[i].pos.x, -world.rocks[i].pos.y);
         world.shapes[i].setFillColor(colorFromVelocity(world.rocks[i].vel));
     }
 }
@@ -182,6 +165,15 @@ void updateShapeSystem(World& world)
 //
 // Visualization
 //
+
+sf::CircleShape shapeFor(const Rock& rock)
+{
+    sf::CircleShape circle;
+    circle.setRadius(rock.radius);
+    circle.setOrigin(rock.radius, rock.radius);
+    circle.setPosition({rock.pos.x, -rock.pos.y});
+    return circle;
+}
 
 void draw(const World& world)
 {
@@ -236,11 +228,15 @@ void handleEvents(World& world)
 
 World createWorld(size_t numRocks, sf::RenderWindow* win)
 {
-    World world(numRocks, win);
-    r::generate(world.rocks, newRandomRock);
-    // world.rocks.push_back(Rock {.pos = {}, .vel = {}, .radius = 30.0f});
-    // world.shapes.push_back(sf::CircleShape {});
-    updateShapeSystem(world); // set shapes positions based on current rocks
+    World world;
+    world.window = win;
+    world.rocks.reserve(numRocks);
+    world.shapes.reserve(numRocks);
+    for (size_t i = 0; i<numRocks; i++) {
+        Rock rock = newRandomRock();
+        world.rocks.push_back(rock);
+        world.shapes.push_back(shapeFor(rock));
+    }
     return world;
 }
 
@@ -253,9 +249,10 @@ void run()
     fmt::print("Gravity Simulator\n");
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Gravity");
     window.setFramerateLimit(60);
+    sf::View view (sf::Vector2f(0,0), sf::Vector2f(200,200));
+    window.setView(view);
 
     World world = createWorld(kNumRocks, &window);
-    scaleView(world, 0.4);
 
     sf::Clock clock;
     while (window.isOpen()) {
