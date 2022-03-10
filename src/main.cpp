@@ -197,11 +197,23 @@ void draw(const World& world)
 // Event Handling
 //
 
+void scaleView(World& world, float scaleFactor)
+{
+    sf::View view = world.window->getView();
+    view.zoom(scaleFactor);
+    world.window->setView(view);
+}
+
 void handleEvents(World& world)
 {
     sf::Event event;
     while (world.window->pollEvent(event)) {
         if (event.type == sf::Event::Closed) { world.window->close(); }
+        if (event.type == sf::Event::Resized) {
+            sf::FloatRect visibleArea(
+                0.f, 0.f, event.size.width, event.size.height);
+            world.window->setView(sf::View(visibleArea));
+        }
         if (event.type == sf::Event::KeyPressed) {
             switch (event.key.code) {
             case sf::Keyboard::Up:
@@ -209,6 +221,12 @@ void handleEvents(World& world)
                 break;
             case sf::Keyboard::Down:
                 world.viewportScale *= 0.8;
+                break;
+            case sf::Keyboard::LBracket:
+                scaleView(world, 0.8);
+                break;
+            case sf::Keyboard::RBracket:
+                scaleView(world, 1.2);
                 break;
             default:
                 break;
