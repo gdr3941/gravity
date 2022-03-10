@@ -13,8 +13,6 @@
 #include <cmath>
 #include "util.h"
 
-namespace r = ranges;
-
 constexpr size_t kNumRocks = 100;
 constexpr float kInitialPosExtent = 45.0f;
 constexpr float kInitialVelExtent = 10.0f;
