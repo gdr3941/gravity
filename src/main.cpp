@@ -17,11 +17,11 @@ namespace r = ranges;
 
 constexpr size_t kNumRocks = 100;
 constexpr float kInitialPosExtent = 45.0f;
-constexpr float kInitialVelExtent = 15.0f;
+constexpr float kInitialVelExtent = 10.0f;
 constexpr float kInitialRadiusMin = 1.0f;
 constexpr float kInitialRadiusMax = 6.0f;
 constexpr float kInitialViewportScale = 3.0f;
-constexpr float kGravity = 6.67408e-1f;
+constexpr float kGravity = 6.67408e-2f;
 
 //
 // Rock - Abstract Entity in our Simulation
@@ -62,8 +62,7 @@ struct World {
     sf::RenderWindow* window;
 
     explicit World(size_t numRocks, sf::RenderWindow* win)
-        : rocks(numRocks), shapes(numRocks), viewportScale {kInitialViewportScale},
-          window {win} {};
+        : rocks(numRocks), shapes(numRocks), window {win} {};
 };
 
 //
@@ -226,6 +225,8 @@ World createWorld(size_t numRocks, sf::RenderWindow* win)
 {
     World world(numRocks, win);
     r::generate(world.rocks, newRandomRock);
+    // world.rocks.push_back(Rock {.pos = {}, .vel = {}, .radius = 30.0f});
+    // world.shapes.push_back(sf::CircleShape {});
     updateShapeSystem(world); // set shapes positions based on current rocks
     return world;
 }
