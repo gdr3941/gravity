@@ -191,6 +191,16 @@ void scaleView(World& world, float scaleFactor)
     world.window->setView(view);
 }
 
+void moveView(World& world, sf::Vector2f move_percent)
+{
+    sf::View view = world.window->getView();
+    sf::Vector2f size = view.getSize();
+    sf::Vector2f center = view.getCenter();
+    sf::Vector2f adjust_center = {size.x * move_percent.x, size.y * move_percent.y};
+    view.setCenter(center += adjust_center);
+    world.window->setView(view);
+}
+
 void handleEvents(World& world)
 {
     sf::Event event;
@@ -204,8 +214,16 @@ void handleEvents(World& world)
         if (event.type == sf::Event::KeyPressed) {
             switch (event.key.code) {
             case sf::Keyboard::Up:
+                moveView(world, {0,-0.10});
                 break;
             case sf::Keyboard::Down:
+                moveView(world, {0,0.10});
+                break;
+            case sf::Keyboard::Left:
+                moveView(world, {-0.10,0});
+                break;
+            case sf::Keyboard::Right:
+                moveView(world, {0.10,0});
                 break;
             case sf::Keyboard::RBracket:
                 scaleView(world, 0.8);
