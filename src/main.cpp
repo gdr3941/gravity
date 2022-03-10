@@ -1,7 +1,7 @@
 //
 // Gravity Simulator
 //
-// [ ] = Zoom In and Out,  Arrows = Move viewport
+// [ ] = Zoom In and Out,  Arrows = Move viewport, 0 = recenter
 //
 
 #include <fmt/core.h>
@@ -55,7 +55,7 @@ Rock newRandomRock()
 }
 
 //
-// Simulation World that holds Entities and settings
+// Simulation World that holds Entities
 //
 
 struct World {
@@ -112,7 +112,6 @@ float mass(const Rock& rock)
     return rock.radius * rock.radius * rock.radius;
 }
 
-/// returns gravity acceleration components for each object due to gravitation
 std::pair<sf::Vector2f, sf::Vector2f>
 gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
 {
@@ -207,6 +206,13 @@ void moveView(World& world, sf::Vector2f move_percent)
     world.window->setView(view);
 }
 
+void centerView(World& world)
+{
+    sf::View view = world.window->getView();
+    view.setCenter({0.0f,0.0f});
+    world.window->setView(view);
+}
+
 void handleEvents(World& world)
 {
     sf::Event event;
@@ -219,6 +225,9 @@ void handleEvents(World& world)
         }
         if (event.type == sf::Event::KeyPressed) {
             switch (event.key.code) {
+            case sf::Keyboard::Num0:
+                centerView(world);
+                break;
             case sf::Keyboard::Up:
                 moveView(world, {0,-0.10});
                 break;
