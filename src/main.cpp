@@ -1,3 +1,9 @@
+//
+// Gravity Simulator
+//
+// [ ] = Zoom In and Out,  Arrows = Move viewport
+//
+
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 #include <SFML/Graphics.hpp>
