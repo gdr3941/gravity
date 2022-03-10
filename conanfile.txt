@@ -7,7 +7,7 @@ doctest/2.4.8
 fmt/8.1.1
 sfml/2.5.1
 range-v3/0.11.0
-# imgui-sfml/2.5@bincrafters/stable
+imgui-sfml/2.5@bincrafters/stable
 
 [options]
 sfml:graphics=True
@@ -15,6 +15,7 @@ sfml:window=True
 sfml:audio=False
 sfml:network=False
 sfml:shared=True  # needs to be dynamic lib to work on MacOS
+imgui-sfml:shared=True
 
 [generators]
 cmake

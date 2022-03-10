@@ -17,6 +17,8 @@
 #include <functional>
 #include <algorithm>
 #include <cmath>
+#include <imgui.h>
+#include <imgui-SFML.h>
 #include "util.h"
 
 constexpr size_t kNumRocks = 100;
@@ -287,10 +289,13 @@ void run()
     window.setFramerateLimit(60);
     sf::View view (sf::Vector2f(0,0), sf::Vector2f(200,200));
     window.setView(view);
+    ImGui::SFML::Init(window);
 
     World world = createWorld(kNumRocks, &window);
 
     sf::Clock clock;
+    char windowTitle[255] = "Imgui + SFML";
+    
     while (window.isOpen()) {
         handleEvents(world);
         float delta = clock.restart().asSeconds();
@@ -300,6 +305,13 @@ void run()
         updateShapeSystem(world);
         window.clear();
         draw(world);
+
+        ImGui::SFML::Update(window, clock.restart());
+        ImGui::Begin("Sample window"); // begin window
+        ImGui::InputText("Window title", windowTitle, 255);
+        ImGui::End(); // end window
+        ImGui::SFML::Render(window);
+
         window.display();
     }
 }
