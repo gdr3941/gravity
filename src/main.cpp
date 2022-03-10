@@ -226,7 +226,7 @@ void handleEvents(World& world)
 {
     sf::Event event;
     while (world.window->pollEvent(event)) {
-        if (event.type == sf::Event::Closed) { world.window->close(); }
+        if (event.type == sf::Event::Closed) {world.window->close();}
         if (event.type == sf::Event::Resized) {
             handleResize(world, event.size.width, event.size.height);
         }
@@ -257,6 +257,7 @@ void handleEvents(World& world)
                 break;
             }
         }
+        ImGui::SFML::ProcessEvent(event);
     }
 }
 
@@ -294,6 +295,7 @@ void run()
     World world = createWorld(kNumRocks, &window);
 
     sf::Clock clock;
+    sf::Clock im_clock;
     char windowTitle[255] = "Imgui + SFML";
     
     while (window.isOpen()) {
@@ -306,7 +308,7 @@ void run()
         window.clear();
         draw(world);
 
-        ImGui::SFML::Update(window, clock.restart());
+        ImGui::SFML::Update(window, im_clock.restart());
         ImGui::Begin("Sample window"); // begin window
         ImGui::InputText("Window title", windowTitle, 255);
         ImGui::End(); // end window
