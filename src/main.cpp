@@ -213,15 +213,20 @@ void centerView(World& world)
     world.window->setView(view);
 }
 
+void handleResize(World& world, unsigned int width, unsigned int height)
+{
+    sf::View view = world.window->getView();
+    view.setSize(width, height);
+    world.window->setView(view);
+}
+
 void handleEvents(World& world)
 {
     sf::Event event;
     while (world.window->pollEvent(event)) {
         if (event.type == sf::Event::Closed) { world.window->close(); }
         if (event.type == sf::Event::Resized) {
-            sf::FloatRect visibleArea(
-                0.f, 0.f, event.size.width, event.size.height);
-            world.window->setView(sf::View(visibleArea));
+            handleResize(world, event.size.width, event.size.height);
         }
         if (event.type == sf::Event::KeyPressed) {
             switch (event.key.code) {
