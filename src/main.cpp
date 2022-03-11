@@ -20,85 +20,10 @@
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include "util.h"
-#include "rock.h"
+#include "rock.hpp"
+#include "world.hpp"
 
 constexpr float kGravity = 6.67408e-2f;
-//
-// Simulation World that holds Entities
-//
-
-struct World {
-    std::vector<Rock> rocks;  // abstract objects in world
-    std::vector<sf::CircleShape> shapes;  // screen object cache
-    sf::RenderWindow* window;
-};
-
-//
-// System Helpers
-//
-
-sf::Color colorFromVelocity(const sf::Vector2f& vel)
-{
-    float vel_percent = ((vel.x * vel.x + vel.y * vel.y)
-                         / (2 * kInitialVelExtent * kInitialVelExtent));
-    int red_level = std::clamp((int)(vel_percent * 255), 0, 255);
-    return sf::Color(red_level, 0, 255 - red_level);
-}
-
-//
-// Entity Systems
-//
-
-void updateCollisionSystem(World& world)
-{
-    util::for_distinct_pairs(world.rocks, [](Rock& a, Rock& b){
-        if (isColliding(a, b)) { updateForCollision(a, b); };
-    });
-}
-
-void updateGravitySystem(World& world, float timestep)
-{
-    util::for_distinct_pairs(world.rocks, [timestep](Rock& a, Rock& b){
-        auto [a_acc, b_acc] = gravityAccelComponents(a, b, kGravity);
-        a.vel += (a_acc * timestep);
-        b.vel += (b_acc * timestep);
-    });
-}
-
-void updateRockPositionSystem(World& world, float timeStep)
-{
-    for (auto& rock : world.rocks) {
-        rock.pos += rock.vel * timeStep;
-    }
-}
-
-void updateShapeSystem(World& world)
-{
-    for (size_t i = 0; i < world.shapes.size(); i++) {
-        world.shapes[i].setPosition(world.rocks[i].pos.x, -world.rocks[i].pos.y);
-        world.shapes[i].setFillColor(colorFromVelocity(world.rocks[i].vel));
-    }
-}
-
-//
-// Visualization
-//
-
-sf::CircleShape shapeFor(const Rock& rock)
-{
-    sf::CircleShape circle;
-    circle.setRadius(rock.radius);
-    circle.setOrigin(rock.radius, rock.radius);
-    circle.setPosition({rock.pos.x, -rock.pos.y});
-    return circle;
-}
-
-void draw(const World& world)
-{
-    for (auto& shape : world.shapes) {
-        world.window->draw(shape);
-    }
-}
 
 //
 // Event Handling
@@ -175,38 +100,6 @@ void handleEvents(World& world)
 }
 
 //
-// Initial Setup
-//
-
-World createRandomWorld(size_t numRocks, sf::RenderWindow* win)
-{
-    World world;
-    world.window = win;
-    world.rocks.reserve(numRocks);
-    world.shapes.reserve(numRocks);
-    for (size_t i = 0; i<numRocks; i++) {
-        Rock rock = newRandomRock();
-        world.rocks.push_back(rock);
-        world.shapes.push_back(shapeFor(rock));
-    }
-    return world;
-}
-
-World createSatWorld(sf::RenderWindow* win)
-{
-    World world;
-    world.window = win;
-    world.rocks.push_back(Rock {.pos = {0,0}, .vel = {0,0}, .radius = 20.0f});
-    for (size_t i = 4; i < 10; i++) {
-        world.rocks.push_back(Rock {.pos = {i*5.0f,0}, .vel = {0, 4.0}, .radius = 2.0});
-    }
-    for (auto& rock: world.rocks) {
-        world.shapes.push_back(shapeFor(rock));
-    }
-    return world;
-}
-
-//
 // Run Loop
 //
 
@@ -230,7 +123,7 @@ void run()
         handleEvents(world);
         float delta = clock.restart().asSeconds();
         updateCollisionSystem(world);
-        updateGravitySystem(world, delta);
+        updateGravitySystem(world, kGravity, delta);
         updateRockPositionSystem(world, delta);
         updateShapeSystem(world);
         window.clear();
