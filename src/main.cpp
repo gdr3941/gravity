@@ -104,26 +104,30 @@ void run()
     window.setView(view);
     ImGui::SFML::Init(window);
 
-    World world = createRandomWorld(100, RockConfig {}, &window);
+    ImGuiIO& io = ImGui::GetIO();
+    io.Fonts->Clear();
+    io.Fonts->AddFontFromFileTTF("arial.ttf", 26.0f);
+    ImGui::SFML::UpdateFontTexture();
+
+    World world = createRandomWorld(100, RockConfig{}, &window);
     // World world = createSatWorld(&window);
 
     sf::Clock clock;
-    sf::Clock im_clock;
     char windowTitle[255] = "Imgui + SFML";
     
     while (window.isOpen()) {
         handleEvents(world);
-        float delta = clock.restart().asSeconds();
+        sf::Time delta = clock.restart();
         updateCollisionSystem(world);
-        updateGravitySystem(world, kGravity, delta);
-        updateRockPositionSystem(world, delta);
+        updateGravitySystem(world, kGravity, delta.asSeconds());
+        updateRockPositionSystem(world, delta.asSeconds());
         updateShapeSystem(world);
         window.clear();
         draw(world);
 
-        ImGui::SFML::Update(window, im_clock.restart());
+        ImGui::SFML::Update(window, delta);
         ImGui::Begin("Sample window"); // begin window
-        ImGui::InputText("Window title", windowTitle, 255);
+        ImGui::InputText("Title", windowTitle, 255);
         ImGui::End(); // end window
         ImGui::SFML::Render(window);
 
