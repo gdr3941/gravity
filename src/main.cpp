@@ -5,18 +5,10 @@
 //
 
 #include <fmt/core.h>
-#include <fmt/ranges.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include <iostream>
-#include <utility>
-#include <vector>
-#include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Window.hpp"
 #include <range/v3/all.hpp>
-#include <functional>
-#include <algorithm>
-#include <cmath>
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include "util.h"
@@ -106,7 +98,7 @@ void handleEvents(World& world)
 void run()
 {
     fmt::print("Gravity Simulator\n");
-    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Gravity");
+    sf::RenderWindow window(sf::VideoMode(1500, 1500), "Gravity");
     window.setFramerateLimit(60);
     sf::View view (sf::Vector2f(0,0), sf::Vector2f(200,200));
     window.setView(view);
