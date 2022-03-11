@@ -58,6 +58,9 @@ conan_basic_setup()
 # main and test executables seperately without compiling application twice.
 add_library(lib ${source_files})
 
+# add resource file to bin directory
+configure_file("${PROJECT_SOURCE_DIR}/resources/arial.ttf" "${PROJECT_SOURCE_DIR}/build/bin/arial.ttf" COPYONLY)
+
 # build executable targets
 add_executable(main ${PROJECT_SOURCE_DIR}/src/main.cpp)
 add_executable(tests ${test_files})
