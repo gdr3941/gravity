@@ -28,7 +28,7 @@ struct RockConfig {
     float radiusMax {6.0f};
 };
 
-Rock newRandmRock(const RockConfig& config);
+Rock newRandomRock(const RockConfig& config);
 
 bool isColliding(const Rock& a, const Rock& b);
 
