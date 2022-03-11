@@ -21,7 +21,7 @@
 #include <imgui-SFML.h>
 #include "util.h"
 
-constexpr size_t kNumRocks = 100;
+// constexpr size_t kNumRocks = 100;
 constexpr float kInitialPosExtent = 45.0f;
 constexpr float kInitialVelExtent = 10.0f;
 constexpr float kInitialRadiusMin = 1.0f;
@@ -265,7 +265,7 @@ void handleEvents(World& world)
 // Initial Setup
 //
 
-World createWorld(size_t numRocks, sf::RenderWindow* win)
+World createRandomWorld(size_t numRocks, sf::RenderWindow* win)
 {
     World world;
     world.window = win;
@@ -274,6 +274,20 @@ World createWorld(size_t numRocks, sf::RenderWindow* win)
     for (size_t i = 0; i<numRocks; i++) {
         Rock rock = newRandomRock();
         world.rocks.push_back(rock);
+        world.shapes.push_back(shapeFor(rock));
+    }
+    return world;
+}
+
+World createSatWorld(sf::RenderWindow* win)
+{
+    World world;
+    world.window = win;
+    world.rocks.push_back(Rock {.pos = {0,0}, .vel = {0,0}, .radius = 20.0f});
+    for (size_t i = 4; i < 10; i++) {
+        world.rocks.push_back(Rock {.pos = {i*5.0f,0}, .vel = {0, 4.0}, .radius = 2.0});
+    }
+    for (auto& rock: world.rocks) {
         world.shapes.push_back(shapeFor(rock));
     }
     return world;
@@ -292,7 +306,8 @@ void run()
     window.setView(view);
     ImGui::SFML::Init(window);
 
-    World world = createWorld(kNumRocks, &window);
+    World world = createRandomWorld(100, &window);
+    // World world = createSatWorld(&window);
 
     sf::Clock clock;
     sf::Clock im_clock;
