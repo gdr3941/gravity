@@ -14,7 +14,7 @@ struct World {
     sf::RenderWindow* window;
 };
 
-World createRandomWorld(size_t numRocks, sf::RenderWindow* win);
+World createRandomWorld(size_t numRocks, RockConfig config, sf::RenderWindow* win);
 
 World createSatWorld(sf::RenderWindow* win);
 

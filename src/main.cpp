@@ -104,7 +104,7 @@ void run()
     window.setView(view);
     ImGui::SFML::Init(window);
 
-    World world = createRandomWorld(100, &window);
+    World world = createRandomWorld(100, RockConfig {}, &window);
     // World world = createSatWorld(&window);
 
     sf::Clock clock;

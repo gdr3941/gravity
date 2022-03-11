@@ -3,14 +3,14 @@
 #import "util.h"
 #import "world.hpp"
 
-World createRandomWorld(size_t numRocks, sf::RenderWindow* win)
+World createRandomWorld(size_t numRocks, RockConfig config, sf::RenderWindow* win)
 {
     World world;
     world.window = win;
     world.rocks.reserve(numRocks);
     world.shapes.reserve(numRocks);
     for (size_t i = 0; i<numRocks; i++) {
-        Rock rock = newRandomRock();
+        Rock rock = newRandomRock(config);
         world.rocks.push_back(rock);
         world.shapes.push_back(shapeFor(rock));
     }
@@ -43,36 +43,6 @@ sf::Color colorFromVelocity(const sf::Vector2f& vel)
     return sf::Color(red_level, 0, 255 - red_level);
 }
 
-float distanceBetween(const sf::Vector2f& a, const sf::Vector2f& b)
-{
-    return sqrt((a.x - b.x) * (a.x - b.x) +
-                (a.y - b.y) * (a.y - b.y));
-}
-
-/// Returns true if in contact and still moving towards one another
-bool isColliding(const Rock& a, const Rock& b)
-{
-    float currentDistance = distanceBetween(a.pos, b.pos);
-    if (currentDistance > (a.radius + b.radius)) return false;
-    // Now check if still moving closer to one another
-    // by using a very small time increment
-    sf::Vector2f future_a_pos = a.pos + (a.vel * 0.001f);
-    sf::Vector2f future_b_pos = b.pos + (b.vel * 0.001f);
-    float futureDistance = distanceBetween(future_a_pos, future_b_pos);
-    return (futureDistance < currentDistance);
-}
-
-
-/// Update velocity vectors from a collision to bounce away
-void updateForCollision(Rock& a, Rock& b)
-{
-    float a_mass = a.mass();
-    float b_mass = b.mass();
-    sf::Vector2f a_new_vel = (a.vel * (a_mass - b_mass) + (2.0f * b_mass * b.vel)) / (a_mass + b_mass);
-    sf::Vector2f b_new_vel = (b.vel * (b_mass - a_mass) + (2.0f * a_mass * a.vel)) / (a_mass + b_mass);
-    a.vel = a_new_vel;
-    b.vel = b_new_vel;
-}
 
 std::pair<sf::Vector2f, sf::Vector2f>
 gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)

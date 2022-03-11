@@ -21,6 +21,17 @@ struct Rock {
     float mass() const;
 };
 
-Rock newRandomRock();
+struct RockConfig {
+    float posExtent {45.0f};
+    float velExtent {10.0f};
+    float radiusMin {1.0f};
+    float radiusMax {6.0f};
+};
+
+Rock newRandomRock(const RockConfig& config);
+
+bool isColliding(const Rock& a, const Rock& b);
+
+void updateForCollision(Rock& a, Rock& b);
 
 std::ostream& operator<<(std::ostream& out, const Rock& r);
