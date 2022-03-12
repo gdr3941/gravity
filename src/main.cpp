@@ -21,15 +21,21 @@
 
 void drawUI(World& world, sf::Time delta)
 {
+    static int numRocks {100};
+    static RockConfig config;
     ImGui::SFML::Update(*world.window, delta);
     ImGui::Begin("Sample window");  // begin window
     ImGui::Text("Adjust Zoom using [ ] ");
     ImGui::Text("Pan using Arrow Keys");
-    ImGui::SliderFloat("Gravity", &world.gravity, 0.0f, 0.667f);
-    // int n = world.rocks.size();
-    // ImGui::InputInt("numRocks", &n);
+    ImGui::InputFloat("Gravity", &world.gravity);
+    ImGui::Text("Initial World Settings");
+    ImGui::InputInt("numRocks", &numRocks);
+    ImGui::InputFloat("RadiusMin", &config.radiusMin);
+    ImGui::InputFloat("RadiusMax", &config.radiusMax);
+    ImGui::InputFloat("PositionMax", &config.posExtent);
+    ImGui::InputFloat("VelocityMax", &config.velExtent);
     if (ImGui::Button("Restart")) {
-        world = createRandomWorld(100, RockConfig {}, world.window);
+        world = createRandomWorld(numRocks, config, world.window);
     }
     ImGui::End();  // end window
     ImGui::SFML::Render(*world.window);
@@ -80,7 +86,7 @@ void handleEvents(World& world)
         }
         if (event.type == sf::Event::KeyPressed) {
             switch (event.key.code) {
-            case sf::Keyboard::Num0:
+            case sf::Keyboard::Equal:
                 centerView(world);
                 break;
             case sf::Keyboard::Up:
