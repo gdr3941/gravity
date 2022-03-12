@@ -13,6 +13,7 @@ struct World {
     std::vector<sf::CircleShape> shapes;  // screen object cache
     sf::RenderWindow* window;
     float gravity {6.67408e-2f};
+    RockConfig rockConfig;
 };
 
 World createRandomWorld(size_t numRocks, RockConfig config, sf::RenderWindow* win);

@@ -7,6 +7,7 @@ World createRandomWorld(size_t numRocks, RockConfig config, sf::RenderWindow* wi
 {
     World world;
     world.window = win;
+    world.rockConfig = config;
     world.rocks.reserve(numRocks);
     world.shapes.reserve(numRocks);
     for (size_t i = 0; i<numRocks; i++) {
@@ -35,10 +36,10 @@ World createSatWorld(sf::RenderWindow* win)
 // System Helpers
 // 
 
-sf::Color colorFromVelocity(const sf::Vector2f& vel)
+sf::Color colorFromVelocity(const sf::Vector2f& vel, const float velExtent)
 {
     float vel_percent = ((vel.x * vel.x + vel.y * vel.y)
-                         / (2 * kInitialVelExtent * kInitialVelExtent));
+                         / (2 * velExtent * velExtent));
     int red_level = std::clamp((int)(vel_percent * 255), 0, 255);
     return sf::Color(red_level, 0, 255 - red_level);
 }
@@ -94,7 +95,8 @@ void updateShapeSystem(World& world)
 {
     for (size_t i = 0; i < world.shapes.size(); i++) {
         world.shapes[i].setPosition(world.rocks[i].pos.x, -world.rocks[i].pos.y);
-        world.shapes[i].setFillColor(colorFromVelocity(world.rocks[i].vel));
+        world.shapes[i].setFillColor(colorFromVelocity(world.rocks[i].vel,
+                                                       world.rockConfig.velExtent));
     }
 }
 

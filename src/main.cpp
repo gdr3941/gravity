@@ -1,7 +1,7 @@
 //
 // Gravity Simulator
 //
-// [ ] = Zoom In and Out,  Arrows = Move viewport, 0 = recenter
+// [ ] = Zoom In and Out,  Arrows = Move viewport, = = recenter
 //
 
 #include <fmt/core.h>
@@ -24,11 +24,8 @@ void drawUI(World& world, sf::Time delta)
     static int numRocks {100};
     static RockConfig config;
     ImGui::SFML::Update(*world.window, delta);
-    ImGui::Begin("Sample window");  // begin window
-    ImGui::Text("Adjust Zoom using [ ] ");
-    ImGui::Text("Pan using Arrow Keys");
+    ImGui::Begin("Settings");  // begin window
     ImGui::InputFloat("Gravity", &world.gravity);
-    ImGui::Text("Initial World Settings");
     ImGui::InputInt("numRocks", &numRocks);
     ImGui::InputFloat("RadiusMin", &config.radiusMin);
     ImGui::InputFloat("RadiusMax", &config.radiusMax);
