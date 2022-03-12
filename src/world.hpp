@@ -12,6 +12,7 @@ struct World {
     std::vector<Rock> rocks;  // abstract objects in world
     std::vector<sf::CircleShape> shapes;  // screen object cache
     sf::RenderWindow* window;
+    float gravity {6.67408e-2f};
 };
 
 World createRandomWorld(size_t numRocks, RockConfig config, sf::RenderWindow* win);
@@ -24,7 +25,7 @@ World createSatWorld(sf::RenderWindow* win);
 
 void updateCollisionSystem(World& world);
 
-void updateGravitySystem(World& world, float gravity, float timestep);
+void updateGravitySystem(World& world, float timestep);
 
 void updateRockPositionSystem(World& world, float timeStep);
 

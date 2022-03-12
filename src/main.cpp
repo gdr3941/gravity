@@ -15,7 +15,21 @@
 #include "rock.hpp"
 #include "world.hpp"
 
-constexpr float kGravity = 6.67408e-2f;
+//
+// ImGUI
+//
+
+void drawUI(World& world, sf::Time delta)
+{
+    ImGui::SFML::Update(*world.window, delta);
+    ImGui::Begin("Sample window");  // begin window
+    ImGui::Text("Scale Adjust: [ ] ");
+    ImGui::Text("Pan: Arrow Keys");
+    ImGui::SliderFloat("Gravity", &world.gravity, 0.0f, 0.667f);
+    ImGui::Button("Restart");
+    ImGui::End();  // end window
+    ImGui::SFML::Render(*world.window);
+}
 
 //
 // Event Handling
@@ -113,24 +127,17 @@ void run()
     // World world = createSatWorld(&window);
 
     sf::Clock clock;
-    char windowTitle[255] = "Imgui + SFML";
-    
+
     while (window.isOpen()) {
         handleEvents(world);
         sf::Time delta = clock.restart();
         updateCollisionSystem(world);
-        updateGravitySystem(world, kGravity, delta.asSeconds());
+        updateGravitySystem(world, delta.asSeconds());
         updateRockPositionSystem(world, delta.asSeconds());
         updateShapeSystem(world);
         window.clear();
         draw(world);
-
-        ImGui::SFML::Update(window, delta);
-        ImGui::Begin("Sample window"); // begin window
-        ImGui::InputText("Title", windowTitle, 255);
-        ImGui::End(); // end window
-        ImGui::SFML::Render(window);
-
+        drawUI(world, delta);
         window.display();
     }
 }
