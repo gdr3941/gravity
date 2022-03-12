@@ -23,10 +23,14 @@ void drawUI(World& world, sf::Time delta)
 {
     ImGui::SFML::Update(*world.window, delta);
     ImGui::Begin("Sample window");  // begin window
-    ImGui::Text("Scale Adjust: [ ] ");
-    ImGui::Text("Pan: Arrow Keys");
+    ImGui::Text("Adjust Zoom using [ ] ");
+    ImGui::Text("Pan using Arrow Keys");
     ImGui::SliderFloat("Gravity", &world.gravity, 0.0f, 0.667f);
-    ImGui::Button("Restart");
+    // int n = world.rocks.size();
+    // ImGui::InputInt("numRocks", &n);
+    if (ImGui::Button("Restart")) {
+        world = createRandomWorld(100, RockConfig {}, world.window);
+    }
     ImGui::End();  // end window
     ImGui::SFML::Render(*world.window);
 }
