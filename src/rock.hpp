@@ -5,7 +5,6 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
 #include "SFML/System/Vector2.hpp"
 
 struct RockConfig {
