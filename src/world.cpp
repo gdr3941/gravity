@@ -76,9 +76,8 @@ void updateCollisionSystem(World& world)
 
 void updateGravitySystem(World& world, float timestep)
 {
-    float gravity = world.gravity;
-    util::for_distinct_pairs(world.rocks, [timestep, gravity](Rock& a, Rock& b){
-        auto [a_acc, b_acc] = gravityAccelComponents(a, b, gravity);
+    util::for_distinct_pairs(world.rocks, [timestep, &world](Rock& a, Rock& b){
+        auto [a_acc, b_acc] = gravityAccelComponents(a, b, world.gravity);
         a.vel += (a_acc * timestep);
         b.vel += (b_acc * timestep);
     });

@@ -32,7 +32,9 @@ void drawUI(World& world, sf::Time delta)
     ImGui::InputFloat("PositionMax", &config.posExtent);
     ImGui::InputFloat("VelocityMax", &config.velExtent);
     if (ImGui::Button("Restart")) {
+        float old_gravity = world.gravity;
         world = createRandomWorld(numRocks, config, world.window);
+        world.gravity = old_gravity;
     }
     ImGui::End();  // end window
     ImGui::SFML::Render(*world.window);
@@ -134,7 +136,6 @@ void run()
     // World world = createSatWorld(&window);
 
     sf::Clock clock;
-
     while (window.isOpen()) {
         handleEvents(world);
         sf::Time delta = clock.restart();
