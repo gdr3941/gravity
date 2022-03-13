@@ -21,18 +21,17 @@
 void drawUI(World& world, sf::Time delta)
 {
     static int numRocks {100};
-    static RockConfig config;
     ImGui::SFML::Update(*world.window, delta);
     ImGui::Begin("Settings");  // begin window
     ImGui::InputFloat("Gravity", &world.gravity);
     ImGui::InputInt("numRocks", &numRocks);
-    ImGui::InputFloat("RadiusMin", &config.radiusMin);
-    ImGui::InputFloat("RadiusMax", &config.radiusMax);
-    ImGui::InputFloat("PositionMax", &config.posExtent);
-    ImGui::InputFloat("VelocityMax", &config.velExtent);
+    ImGui::InputFloat("RadiusMin", &world.rockConfig.radiusMin);
+    ImGui::InputFloat("RadiusMax", &world.rockConfig.radiusMax);
+    ImGui::InputFloat("PositionMax", &world.rockConfig.posExtent);
+    ImGui::InputFloat("VelocityMax", &world.rockConfig.velExtent);
     if (ImGui::Button("Restart")) {
         float old_gravity = world.gravity;
-        world = createRandomWorld(numRocks, config, world.window);
+        world = createRandomWorld(numRocks, world.rockConfig, world.window);
         world.gravity = old_gravity;
     }
     ImGui::End();  // end window
