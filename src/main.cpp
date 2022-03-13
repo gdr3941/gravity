@@ -116,6 +116,18 @@ void handleEvents(World& world)
     }
 }
 
+void loadFonts()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    io.Fonts->Clear();
+    #ifdef __linux__
+    io.Fonts->AddFontFromFileTTF("arial.ttf", 14.0f);
+    #elif
+    io.Fonts->AddFontFromFileTTF("arial.ttf", 26.0f);
+    #endif
+    ImGui::SFML::UpdateFontTexture();
+}
+
 //
 // Run Loop
 //
@@ -127,16 +139,10 @@ void run()
     sf::View view (sf::Vector2f(0,0), sf::Vector2f(200,200));
     window.setView(view);
     ImGui::SFML::Init(window);
-
-    ImGuiIO& io = ImGui::GetIO();
-    io.Fonts->Clear();
-    // io.Fonts->AddFontFromFileTTF("arial.ttf", 26.0f);
-    io.Fonts->AddFontFromFileTTF("arial.ttf", 14.0f);
-    ImGui::SFML::UpdateFontTexture();
+    loadFonts();
 
     World world(&window);
     addRandomRocks(world, 100);
-    // World world = createSatWorld(&window);
 
     sf::Clock clock;
     while (window.isOpen()) {
