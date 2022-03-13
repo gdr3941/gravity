@@ -130,7 +130,8 @@ void run()
 
     ImGuiIO& io = ImGui::GetIO();
     io.Fonts->Clear();
-    io.Fonts->AddFontFromFileTTF("arial.ttf", 26.0f);
+    // io.Fonts->AddFontFromFileTTF("arial.ttf", 26.0f);
+    io.Fonts->AddFontFromFileTTF("arial.ttf", 14.0f);
     ImGui::SFML::UpdateFontTexture();
 
     World world(&window);
