@@ -24,7 +24,7 @@ void loadFonts()
     io.Fonts->Clear();
     #ifdef __linux__
     io.Fonts->AddFontFromFileTTF("arial.ttf", 14.0f);
-    #elif
+    #else
     io.Fonts->AddFontFromFileTTF("arial.ttf", 26.0f);
     #endif
     ImGui::SFML::UpdateFontTexture();
