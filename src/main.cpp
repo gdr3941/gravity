@@ -15,8 +15,20 @@
 #include "world.hpp"
 
 //
-// ImGUI
+// ImGui 
 //
+
+void loadFonts()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    io.Fonts->Clear();
+    #ifdef __linux__
+    io.Fonts->AddFontFromFileTTF("arial.ttf", 14.0f);
+    #elif
+    io.Fonts->AddFontFromFileTTF("arial.ttf", 26.0f);
+    #endif
+    ImGui::SFML::UpdateFontTexture();
+}
 
 void drawUI(World& world, sf::Time delta)
 {
@@ -114,18 +126,6 @@ void handleEvents(World& world)
         }
         ImGui::SFML::ProcessEvent(event);
     }
-}
-
-void loadFonts()
-{
-    ImGuiIO& io = ImGui::GetIO();
-    io.Fonts->Clear();
-    #ifdef __linux__
-    io.Fonts->AddFontFromFileTTF("arial.ttf", 14.0f);
-    #elif
-    io.Fonts->AddFontFromFileTTF("arial.ttf", 26.0f);
-    #endif
-    ImGui::SFML::UpdateFontTexture();
 }
 
 //
