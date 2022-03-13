@@ -8,7 +8,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "SFML/Window/Window.hpp"
-#include <range/v3/all.hpp>
 #include <imgui.h>
 #include <imgui-SFML.h>
 #include "util.h"
@@ -120,7 +119,6 @@ void handleEvents(World& world)
 
 void run()
 {
-    fmt::print("Gravity Simulator\n");
     sf::RenderWindow window(sf::VideoMode(1500, 1500), "Gravity");
     window.setFramerateLimit(60);
     sf::View view (sf::Vector2f(0,0), sf::Vector2f(200,200));
