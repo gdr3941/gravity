@@ -53,6 +53,7 @@ conan_basic_setup()
 # Alternative: add in-project source code libs that are cmake based
 # must also include the target (from add_library in cmake file) to link_libraries
 # add_subdirectory(extern/fplus)
+# also see this blog post: https://eliasdaler.github.io/using-cmake/
 
 # create the application library target that has all code except main. This enables building the
 # main and test executables seperately without compiling application twice.

@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#import "util.h"
-#import "world.hpp"
+#include "util.h"
+#include "world.hpp"
 
 void addRandomRocks(World& world, size_t numRocks)
 {
