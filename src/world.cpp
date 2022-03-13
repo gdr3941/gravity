@@ -3,25 +3,19 @@
 #import "util.h"
 #import "world.hpp"
 
-World createRandomWorld(size_t numRocks, RockConfig config, sf::RenderWindow* win)
+void addRandomRocks(World& world, size_t numRocks)
 {
-    World world;
-    world.window = win;
-    world.rockConfig = config;
-    world.rocks.reserve(numRocks);
-    world.shapes.reserve(numRocks);
+    world.rocks.reserve(world.rocks.size() + numRocks);
+    world.shapes.reserve(world.shapes.size() + numRocks);
     for (size_t i = 0; i<numRocks; i++) {
-        Rock rock = newRandomRock(config);
+        Rock rock = newRandomRock(world.rockConfig);
         world.rocks.push_back(rock);
         world.shapes.push_back(shapeFor(rock));
     }
-    return world;
 }
 
-World createSatWorld(sf::RenderWindow* win)
+void addSatRocks(World& world)
 {
-    World world;
-    world.window = win;
     world.rocks.push_back(Rock {.pos = {0,0}, .vel = {0,0}, .radius = 20.0f});
     for (size_t i = 4; i < 10; i++) {
         world.rocks.push_back(Rock {.pos = {i*5.0f,0}, .vel = {0, 4.0}, .radius = 2.0});
@@ -29,7 +23,12 @@ World createSatWorld(sf::RenderWindow* win)
     for (auto& rock: world.rocks) {
         world.shapes.push_back(shapeFor(rock));
     }
-    return world;
+}
+
+void deleteAllRocks(World& world)
+{
+    world.rocks = {};
+    world.shapes = {};
 }
 
 //

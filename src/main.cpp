@@ -20,19 +20,23 @@
 
 void drawUI(World& world, sf::Time delta)
 {
-    static int numRocks {100};
+    static int addRocks {100};
     ImGui::SFML::Update(*world.window, delta);
     ImGui::Begin("Settings");  // begin window
+    ImGui::Text("Active Rocks: %lu", world.rocks.size());
     ImGui::InputFloat("Gravity", &world.gravity);
-    ImGui::InputInt("numRocks", &numRocks);
     ImGui::InputFloat("RadiusMin", &world.rockConfig.radiusMin);
     ImGui::InputFloat("RadiusMax", &world.rockConfig.radiusMax);
     ImGui::InputFloat("PositionMax", &world.rockConfig.posExtent);
     ImGui::InputFloat("VelocityMax", &world.rockConfig.velExtent);
+    ImGui::InputInt("RocksToAdd", &addRocks);
+    if (ImGui::Button("Add Rocks")) {
+        addRandomRocks(world, addRocks);
+    }
+    ImGui::SameLine();
     if (ImGui::Button("Restart")) {
-        float old_gravity = world.gravity;
-        world = createRandomWorld(numRocks, world.rockConfig, world.window);
-        world.gravity = old_gravity;
+        deleteAllRocks(world);
+        addRandomRocks(world, addRocks);
     }
     ImGui::End();  // end window
     ImGui::SFML::Render(*world.window);
@@ -129,7 +133,8 @@ void run()
     io.Fonts->AddFontFromFileTTF("arial.ttf", 26.0f);
     ImGui::SFML::UpdateFontTexture();
 
-    World world = createRandomWorld(100, RockConfig{}, &window);
+    World world(&window);
+    addRandomRocks(world, 100);
     // World world = createSatWorld(&window);
 
     sf::Clock clock;

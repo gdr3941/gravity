@@ -13,12 +13,16 @@ struct World {
     std::vector<sf::CircleShape> shapes;  // screen object cache
     sf::RenderWindow* window;
     float gravity {6.67408e-2f};
-    RockConfig rockConfig;
+    RockConfig rockConfig {};
+
+    explicit World(sf::RenderWindow* window): window {window} {};
 };
 
-World createRandomWorld(size_t numRocks, RockConfig config, sf::RenderWindow* win);
+void addRandomRocks(World& world, size_t numRocks);
 
-World createSatWorld(sf::RenderWindow* win);
+void addSatRocks(World& world);
+
+void deleteAllRocks(World& world);
 
 //
 // Entity Systems
