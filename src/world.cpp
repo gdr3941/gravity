@@ -49,23 +49,26 @@ sf::Color colorFromVelocity(const sf::Vector2f& vel, const float velExtent)
 // for another approach
 
 std::pair<sf::Vector2f, sf::Vector2f>
-gravityAccelComponentsFast(const Rock& a, const Rock& b, const float gConst)
+gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
 {
-    float distance2 = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) +
-        (a.pos.y - b.pos.y) * (a.pos.y - b.pos.y);
-    float acc = gConst / distance2;
-    std::cout<< acc << "\n";
-    sf::Vector2f a_vec = b.pos - a.pos;  // distance vector
-    float tot_a = std::abs(a_vec.x) + std::abs(a_vec.y);
-    // problem of using a ratio is that the total is not = to the hyp
-    // since a2 + b2 = c2 
-    sf::Vector2f acc_a = (a_vec / tot_a) * acc * b.mass();
-    sf::Vector2f acc_b = ((-a_vec) / tot_a) * acc * a.mass(); // inverse vector of a
+    sf::Vector2f pos_a = b.pos - a.pos;
+    float dist2 = pos_a.x * pos_a.x + pos_a.y * pos_a.y;
+
+    if (dist2 == 0.0) return {{0,0}, {0,0}};
+    float dist = sqrt(dist2);
+
+    float g_a = gConst * b.mass() / dist2;
+    sf::Vector2f acc_a {(pos_a.x * g_a) / dist, (pos_a.y * g_a) / dist};
+
+    sf::Vector2f pos_b = -pos_a;
+    float g_b = gConst * a.mass() / dist2;
+    sf::Vector2f acc_b {(pos_b.x * g_b) / dist, (pos_b.y * g_b) / dist};
+    
     return {acc_a, acc_b};
 }
 
 std::pair<sf::Vector2f, sf::Vector2f>
-gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
+gravityAccelComponentsOld(const Rock& a, const Rock& b, const float gConst)
 {
     float distance2 = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) +
         (a.pos.y - b.pos.y) * (a.pos.y - b.pos.y);
@@ -86,11 +89,11 @@ gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
 void testGrav()
 {
     Rock a {.pos = {0,0}, .radius = 10.0f};
-    Rock b {.pos = {1,1}, .radius = 1.0f};
-    auto [g_a, g_b] = gravityAccelComponents(a, b, 0.6f);
+    Rock b {.pos = {0,0}, .radius = 1.0f};
+    auto [g_a, g_b] = gravityAccelComponentsOld(a, b, 0.6f);
     std::cout << "a: " << g_a.x << ", " << g_a.y << "\n";
     std::cout << "b: " << g_b.x << ", " << g_b.y << "\n";
-    auto [g_a_o, g_b_o] = gravityAccelComponentsFast(a, b, 0.6f);
+    auto [g_a_o, g_b_o] = gravityAccelComponents(a, b, 0.6f);
     std::cout << "a_fast: " << g_a_o.x << ", " << g_a_o.y << "\n";
     std::cout << "b_fast: " << g_b_o.x << ", " << g_b_o.y << "\n";
 }

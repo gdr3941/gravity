@@ -4,6 +4,4 @@ On linux, running around 8fps with 2000 rocks (12 on mac??)
 Heaviest hit is Atan2 using about 40% of samples
 SinCos is next highest @ 33 
 
-switching to using ratio made massive improvement! @ 2000 rocks still at 59fps!
-
-PROBLEM: not accurate, see note
+Now running with fast @ 49 fps on mac @ 2000 rocks!!
