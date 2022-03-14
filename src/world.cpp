@@ -43,24 +43,35 @@ sf::Color colorFromVelocity(const sf::Vector2f& vel, const float velExtent)
     return sf::Color(red_level, 0, 255 - red_level);
 }
 
-
 std::pair<sf::Vector2f, sf::Vector2f>
 gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
 {
     float distance2 = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) +
         (a.pos.y - b.pos.y) * (a.pos.y - b.pos.y);
     float acc = gConst / distance2;
-    float t_acc_a = acc * b.mass();  // total acceleration on a
-    float t_acc_b = acc * a.mass();  // total acceleration on b
-    // Now break down totals into x & y components
-    sf::Vector2f a_vec = b.pos - a.pos;
-    sf::Vector2f b_vec = a.pos - b.pos;
-    float a_radians = atan2(a_vec.y, a_vec.x);
-    float b_radians = atan2(b_vec.y, b_vec.x);
-    sf::Vector2f acc_a {static_cast<float>(cos(a_radians)*t_acc_a), static_cast<float>(sin(a_radians)*t_acc_a)};
-    sf::Vector2f acc_b {static_cast<float>(cos(b_radians)*t_acc_b), static_cast<float>(sin(b_radians)*t_acc_b)};
+    sf::Vector2f a_vec = b.pos - a.pos;  // distance vector
+    float tot_a = std::abs(a_vec.x) + std::abs(a_vec.y);
+    sf::Vector2f acc_a = (a_vec / tot_a) * acc * b.mass();
+    sf::Vector2f acc_b = ((-a_vec) / tot_a) * acc * a.mass(); // inverse vector of a
     return {acc_a, acc_b};
 }
+// std::pair<sf::Vector2f, sf::Vector2f>
+// gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
+// {
+//     float distance2 = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) +
+//         (a.pos.y - b.pos.y) * (a.pos.y - b.pos.y);
+//     float acc = gConst / distance2;
+//     float t_acc_a = acc * b.mass();  // total acceleration on a
+//     float t_acc_b = acc * a.mass();  // total acceleration on b
+//     // Now break down totals into x & y components
+//     sf::Vector2f a_vec = b.pos - a.pos;
+//     sf::Vector2f b_vec = a.pos - b.pos;
+//     float a_radians = atan2(a_vec.y, a_vec.x);
+//     float b_radians = atan2(b_vec.y, b_vec.x);
+//     sf::Vector2f acc_a {static_cast<float>(cos(a_radians)*t_acc_a), static_cast<float>(sin(a_radians)*t_acc_a)};
+//     sf::Vector2f acc_b {static_cast<float>(cos(b_radians)*t_acc_b), static_cast<float>(sin(b_radians)*t_acc_b)};
+//     return {acc_a, acc_b};
+// }
 
 //
 // Entity Systems

@@ -1,0 +1,7 @@
+* Inbox
+** [2022-03-13 Sun 19:13] Perf Results
+On linux, running around 8fps with 2000 rocks
+Heaviest hit is Atan2 using about 40% of samples
+SinCos is next highest @ 33 
+
+switching to using ratio made massive improvement! @ 2000 rocks still at 59fps!

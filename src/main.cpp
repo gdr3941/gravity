@@ -144,6 +144,7 @@ void run()
 
     World world(&window);
     addRandomRocks(world, 100);
+    // addSatRocks(world);
 
     sf::Clock clock;
     while (window.isOpen()) {
