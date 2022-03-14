@@ -36,6 +36,8 @@ void updateRockPositionSystem(World& world, float timeStep);
 
 void updateShapeSystem(World& world);
 
+void testGrav();
+
 //
 // Visualization
 //
