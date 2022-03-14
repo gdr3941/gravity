@@ -48,6 +48,10 @@ sf::Color colorFromVelocity(const sf::Vector2f& vel, const float velExtent)
 // https://gamedev.stackexchange.com/questions/15708/how-can-i-implement-gravity
 // for another approach
 
+// Another issue: at very small distances (sub radius), forces get really high
+// When then sign flips due to collision system, get crazy high accelerations
+// This is causing the "exploding" particles problem.
+
 std::pair<sf::Vector2f, sf::Vector2f>
 gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
 {
