@@ -7,19 +7,19 @@
 #include <iostream>
 #include "SFML/System/Vector2.hpp"
 
-struct RockConfig {
-    float posExtent {45.0f};
-    float velExtent {10.0f};
-    float radiusMin {1.0f};
-    float radiusMax {6.0f};
-};
-
 struct Rock {
     sf::Vector2f pos {0,0};
     sf::Vector2f vel {0,0};
     float radius {0.0f};
 
     float mass() const;
+};
+
+struct RockConfig {
+    float posExtent {45.0f};
+    float velExtent {10.0f};
+    float radiusMin {1.0f};
+    float radiusMax {6.0f};
 };
 
 Rock newRandomRock(const RockConfig& config);
