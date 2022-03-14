@@ -4,12 +4,12 @@
 #include "util.h"
 #include "world.hpp"
 
-void addRandomRocks(World& world, size_t numRocks)
+void addRandomRocks(World& world, size_t numRocks, RockConfig rockConfig)
 {
     world.rocks.reserve(world.rocks.size() + numRocks);
     world.shapes.reserve(world.shapes.size() + numRocks);
     for (size_t i = 0; i<numRocks; i++) {
-        Rock rock = newRandomRock(world.rockConfig);
+        Rock rock = newRandomRock(rockConfig);
         world.rocks.push_back(rock);
         world.shapes.push_back(shapeFor(rock));
     }
@@ -39,7 +39,7 @@ void deleteAllRocks(World& world)
 sf::Color colorFromVelocity(const sf::Vector2f& vel, const float velExtent)
 {
     float vel_percent = ((vel.x * vel.x + vel.y * vel.y)
-                         / (2 * velExtent * velExtent));
+                         / (velExtent * velExtent));
     int red_level = std::clamp((int)(vel_percent * 255), 0, 255);
     return sf::Color(red_level, 0, 255 - red_level);
 }
@@ -127,7 +127,7 @@ void updateShapeSystem(World& world)
     for (size_t i = 0; i < world.shapes.size(); i++) {
         world.shapes[i].setPosition(world.rocks[i].pos.x, -world.rocks[i].pos.y);
         world.shapes[i].setFillColor(colorFromVelocity(world.rocks[i].vel,
-                                                       world.rockConfig.velExtent));
+                                                       world.velColorExtent));
     }
 }
 

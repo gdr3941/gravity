@@ -13,12 +13,12 @@ struct World {
     std::vector<sf::CircleShape> shapes;  // screen object cache
     sf::RenderWindow* window;
     float gravity {6.67408e-2f};
-    RockConfig rockConfig {};
+    float velColorExtent {20.0f};  // Vel for full red color
 
     explicit World(sf::RenderWindow* window): window {window} {};
 };
 
-void addRandomRocks(World& world, size_t numRocks);
+void addRandomRocks(World& world, size_t numRocks, RockConfig rockConfig);
 
 void addSatRocks(World& world);
 
