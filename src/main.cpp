@@ -36,6 +36,7 @@ void drawUI(World& world, sf::Time delta)
     ImGui::SFML::Update(*world.window, delta);
     ImGui::Begin("Settings");  // begin window
     ImGui::Text("Active Rocks: %lu", world.rocks.size());
+    ImGui::Text("FPS: %d", static_cast<int>(1.0/delta.asSeconds()));
     ImGui::InputFloat("Gravity", &world.gravity);
     ImGui::InputFloat("RadiusMin", &world.rockConfig.radiusMin);
     ImGui::InputFloat("RadiusMax", &world.rockConfig.radiusMax);
