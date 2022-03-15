@@ -152,8 +152,8 @@ void run()
     while (window.isOpen()) {
         handleEvents(world);
         sf::Time delta = clock.restart();
-        updateCollisionSystem(world);
         updateGravitySystem(world, delta.asSeconds());
+        updateCollisionSystem(world);
         updateRockPositionSystem(world, delta.asSeconds());
         updateShapeSystem(world);
         window.clear();
