@@ -44,9 +44,8 @@ sf::Color colorFromVelocity(const sf::Vector2f& vel, const float velExtent)
     return sf::Color(red_level, 0, 255 - red_level);
 }
 
-// See
+// See for another approach (but this new one works really good!)
 // https://gamedev.stackexchange.com/questions/15708/how-can-i-implement-gravity
-// for another approach
 
 std::pair<sf::Vector2f, sf::Vector2f>
 gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
@@ -71,6 +70,7 @@ gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
     return {acc_a, acc_b};
 }
 
+// Deprecated original slow solution, yet keeping for reference
 std::pair<sf::Vector2f, sf::Vector2f>
 gravityAccelComponentsOld(const Rock& a, const Rock& b, const float gConst)
 {
@@ -88,7 +88,6 @@ gravityAccelComponentsOld(const Rock& a, const Rock& b, const float gConst)
     sf::Vector2f acc_b {static_cast<float>(cos(b_radians)*t_acc_b), static_cast<float>(sin(b_radians)*t_acc_b)};
     return {acc_a, acc_b};
 }
-
 
 void testGrav()
 {
