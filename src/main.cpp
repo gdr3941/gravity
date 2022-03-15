@@ -165,6 +165,6 @@ void run()
 
 int main()
 {
-    // testGrav();
-    run();
+    testGrav();
+    // run();
 }
