@@ -1,4 +1,12 @@
 * Inbox
+** [2022-03-14 Mon 20:33] Gravity Over Accel
+Another issue: at very small distances (sub radius), forces get really high
+When then sign flips due to collision system, get crazy high accelerations
+This is causing the "exploding" particles problem.
+Fixed with check for distance < radius combined
+
+[[file:~/projects/gravity/src/world.cpp][file:~/projects/gravity/src/world.cpp]]
+
 ** [2022-03-13 Sun 19:13] Perf Results
 On linux, running around 8fps with 2000 rocks (12 on mac??)
 Heaviest hit is Atan2 using about 40% of samples
