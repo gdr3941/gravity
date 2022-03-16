@@ -46,6 +46,11 @@ sf::Color colorFromVelocity(const sf::Vector2f& vel, const float velExtent)
 
 // See for another approach (but this new one works really good!)
 // https://gamedev.stackexchange.com/questions/15708/how-can-i-implement-gravity
+// acceleration = force(time, position) / mass;
+// time += timestep;
+// position += timestep * (velocity + timestep * acceleration / 2);
+// newAcceleration = force(time, position) / mass;
+// velocity += timestep * (acceleration + newAcceleration) / 2;
 
 std::pair<sf::Vector2f, sf::Vector2f>
 gravityAccelComponents(const Rock& a, const Rock& b, const float gConst, bool ignoreShortDist)

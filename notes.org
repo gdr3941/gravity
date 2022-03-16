@@ -14,3 +14,5 @@ SinCos is next highest @ 33
 
 Now running with fast @ 49 fps on mac @ 2000 rocks!
 On desktop, running 59fps @ 2000 rocks!!
+
+35 fps now on mac with hypot, switched back and back at 45 fps.
