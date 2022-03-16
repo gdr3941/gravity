@@ -8,7 +8,7 @@ void addRandomRocks(World& world, size_t numRocks, RockConfig rockConfig)
 {
     world.rocks.reserve(world.rocks.size() + numRocks);
     world.shapes.reserve(world.shapes.size() + numRocks);
-    for (size_t i = 0; i<numRocks; i++) {
+    for (size_t i = 0; i<numRocks; ++i) {
         Rock rock = newRandomRock(rockConfig);
         world.rocks.push_back(rock);
         world.shapes.push_back(shapeFor(rock));
@@ -18,7 +18,7 @@ void addRandomRocks(World& world, size_t numRocks, RockConfig rockConfig)
 void addSatRocks(World& world)
 {
     world.rocks.push_back(Rock {.pos = {0,0}, .vel = {0,0}, .radius = 20.0f});
-    for (size_t i = 4; i < 10; i++) {
+    for (size_t i = 4; i < 10; ++i) {
         world.rocks.push_back(Rock {.pos = {i*5.0f,0}, .vel = {0, 4.0}, .radius = 2.0});
     }
     for (auto& rock: world.rocks) {
@@ -99,7 +99,7 @@ void updateRockPositionSystem(World& world, float timeStep)
 
 void updateShapeSystem(World& world)
 {
-    for (size_t i = 0; i < world.shapes.size(); i++) {
+    for (size_t i = 0; i < world.shapes.size(); ++i) {
         world.shapes[i].setPosition(world.rocks[i].pos.x, -world.rocks[i].pos.y);
         world.shapes[i].setFillColor(colorFromVelocity(world.rocks[i].vel,
                                                        world.velColorExtent));

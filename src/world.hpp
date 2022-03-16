@@ -5,7 +5,7 @@
 #include "rock.hpp"
 
 //
-// Simulation World that holds Entities
+// Simulation World that holds Entities and Config
 //
 
 struct World {
