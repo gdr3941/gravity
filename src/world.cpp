@@ -56,8 +56,13 @@ gravityAccelComponents(const Rock& a, const Rock& b, const float gConst)
     float combined_radius = a.radius + b.radius;
     float combined_radius2 = combined_radius * combined_radius;
     if (dist2 < combined_radius2) {
-        dist2 = combined_radius;
+        // dont add gravity if overlapping to prevent overacceleration
+        return {{0,0}, {0,0}};
     }
+
+    // if (dist2 < combined_radius2) {
+    //     dist2 = combined_radius;
+    // }
     float dist = sqrt(dist2);
 
     float g_a = gConst * b.mass() / dist2;
