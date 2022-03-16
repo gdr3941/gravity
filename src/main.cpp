@@ -39,6 +39,7 @@ void drawUI(World& world, sf::Time delta)
     ImGui::Text("Active Rocks: %lu", world.rocks.size());
     ImGui::Text("FPS: %d", static_cast<int>(1.0/delta.asSeconds()));
     ImGui::InputFloat("Gravity", &world.gravity);
+    ImGui::Checkbox("Ignore Short Distance Grav", &world.ignoreShortDistGrav);
     ImGui::DragFloat("VelColorMax", &world.velColorExtent, 0.1f, 1.0f, 30.0f);
     ImGui::InputFloat("RadiusMin", &rockConfig.radiusMin);
     ImGui::InputFloat("RadiusMax", &rockConfig.radiusMax);
