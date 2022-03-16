@@ -19,8 +19,7 @@ float Rock::mass() const
 
 float distanceBetween(const sf::Vector2f& a, const sf::Vector2f& b)
 {
-    return sqrt((a.x - b.x) * (a.x - b.x) +
-                (a.y - b.y) * (a.y - b.y));
+    return hypotf(b.x - a.x, b.y - a.y);
 }
 
 /// Returns true if in contact and still moving towards one another
