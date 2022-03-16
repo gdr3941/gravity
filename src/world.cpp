@@ -50,6 +50,7 @@ sf::Color colorFromVelocity(const sf::Vector2f& vel, const float velExtent)
 std::pair<sf::Vector2f, sf::Vector2f>
 gravityAccelComponents(const Rock& a, const Rock& b, const float gConst, bool ignoreShortDist)
 {
+    // util::Timer timer;
     sf::Vector2f pos_a = b.pos - a.pos;
     float dist2 = pos_a.x * pos_a.x + pos_a.y * pos_a.y;
     if (ignoreShortDist && dist2 < ((a.radius + b.radius) * (a.radius + b.radius))) {
