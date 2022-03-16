@@ -70,37 +70,6 @@ gravityAccelComponents(const Rock& a, const Rock& b, const float gConst, bool ig
     return {acc_a, acc_b};
 }
 
-// Deprecated original slow solution, yet keeping for reference
-std::pair<sf::Vector2f, sf::Vector2f>
-gravityAccelComponentsOld(const Rock& a, const Rock& b, const float gConst)
-{
-    float distance2 = (a.pos.x - b.pos.x) * (a.pos.x - b.pos.x) +
-        (a.pos.y - b.pos.y) * (a.pos.y - b.pos.y);
-    float acc = gConst / distance2;
-    float t_acc_a = acc * b.mass();  // total acceleration on a
-    float t_acc_b = acc * a.mass();  // total acceleration on b
-    // Now break down totals into x & y components
-    sf::Vector2f a_vec = b.pos - a.pos;
-    sf::Vector2f b_vec = a.pos - b.pos;
-    float a_radians = atan2(a_vec.y, a_vec.x);
-    float b_radians = atan2(b_vec.y, b_vec.x);
-    sf::Vector2f acc_a {static_cast<float>(cos(a_radians)*t_acc_a), static_cast<float>(sin(a_radians)*t_acc_a)};
-    sf::Vector2f acc_b {static_cast<float>(cos(b_radians)*t_acc_b), static_cast<float>(sin(b_radians)*t_acc_b)};
-    return {acc_a, acc_b};
-}
-
-void testGrav()
-{
-    Rock a {.pos = {0,0}, .radius = 10.0f};
-    Rock b {.pos = {0,12}, .radius = 1.0f};
-    auto [g_a, g_b] = gravityAccelComponentsOld(a, b, 0.6f);
-    std::cout << "a: " << g_a.x << ", " << g_a.y << "\n";
-    std::cout << "b: " << g_b.x << ", " << g_b.y << "\n";
-    auto [g_a_o, g_b_o] = gravityAccelComponents(a, b, 0.6f, false);
-    std::cout << "a_fast: " << g_a_o.x << ", " << g_a_o.y << "\n";
-    std::cout << "b_fast: " << g_b_o.x << ", " << g_b_o.y << "\n";
-}
-
 //
 // Entity Systems
 //
