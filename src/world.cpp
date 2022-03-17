@@ -60,7 +60,6 @@ gravityAccelComponents(const Rock& a, const Rock& b, const float gConst, bool ig
     float dist2 = pos_a.x * pos_a.x + pos_a.y * pos_a.y;
     if (ignoreShortDist && dist2 < ((a.radius + b.radius) * (a.radius + b.radius))) {
         // dont add gravity if overlapping to prevent overacceleration
-        // only want velocity of collision
         return {{0,0}, {0,0}};
     }
     float dist = sqrt(dist2);
