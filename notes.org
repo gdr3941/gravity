@@ -18,3 +18,6 @@ On desktop, running 59fps @ 2000 rocks!!
 35 fps now on mac with hypot, switched back and back at 45 fps.
 
 using the combined system, running at same speed as before. Did not help.
+
+inlining now have 2000 @ 57fps on mac, 27 fps @ 3000 rocks on mac
+

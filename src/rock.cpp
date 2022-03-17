@@ -12,12 +12,7 @@ Rock newRandomRock(const RockConfig& config)
     return rock;
 }
 
-float mass(const Rock& a)
-{
-    return a.radius * a.radius * a.radius;
-}
-
-float distanceBetween(const sf::Vector2f& a, const sf::Vector2f& b)
+inline float distanceBetween(const sf::Vector2f& a, const sf::Vector2f& b)
 {
     // note: hypot function was slower
     return sqrt((a.x - b.x) * (a.x - b.x) +

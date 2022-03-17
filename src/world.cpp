@@ -65,7 +65,6 @@ gravityAccelComponents(const Rock& a, const Rock& b, const float gConst, bool ig
     }
     float dist = sqrt(dist2);
 
-    // using mass calc here faster than calling member function
     float g_a = gConst * mass(b) / dist2;
     sf::Vector2f acc_a {(pos_a.x * g_a) / dist, (pos_a.y * g_a) / dist};
 

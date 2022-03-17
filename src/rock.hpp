@@ -20,7 +20,10 @@ struct RockConfig {
     float radiusMax {6.0f};
 };
 
-float mass(const Rock& a);
+inline float mass(const Rock& a)
+{
+    return a.radius * a.radius * a.radius;
+}
 
 Rock newRandomRock(const RockConfig& config);
 
