@@ -1,11 +1,11 @@
-//
-// Rock - Abstract Entity in Simulation
-//
-
 #pragma once
 
 #include <iostream>
 #include "SFML/System/Vector2.hpp"
+
+//
+// Rock - Abstract Entity in Simulation
+//
 
 struct Rock {
     sf::Vector2f pos {0,0};
