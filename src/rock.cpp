@@ -1,6 +1,17 @@
 #include "util.h"
 #include "rock.hpp"
 
+namespace {
+
+inline float dist2(const sf::Vector2f& a, const sf::Vector2f& b)
+{
+    // note: hypot function was slower
+    return (a.x - b.x) * (a.x - b.x) +
+                (a.y - b.y) * (a.y - b.y);
+}
+
+}  // namespace
+
 Rock newRandomRock(const RockConfig& config)
 {
     Rock rock;
@@ -12,24 +23,17 @@ Rock newRandomRock(const RockConfig& config)
     return rock;
 }
 
-inline float distanceBetween(const sf::Vector2f& a, const sf::Vector2f& b)
-{
-    // note: hypot function was slower
-    return sqrt((a.x - b.x) * (a.x - b.x) +
-                (a.y - b.y) * (a.y - b.y));
-}
-
 /// Returns true if in contact and still moving towards one another
 bool isColliding(const Rock& a, const Rock& b)
 {
-    float currentDistance = distanceBetween(a.pos, b.pos);
-    if (currentDistance > (a.radius + b.radius)) return false;
+    float currentDistance2 = dist2(a.pos, b.pos);
+    if (currentDistance2 > ((a.radius + b.radius) * (a.radius + b.radius))) return false;
     // Now check if still moving closer to one another
     // by using a very small time increment
     sf::Vector2f future_a_pos = a.pos + (a.vel * 0.001f);
     sf::Vector2f future_b_pos = b.pos + (b.vel * 0.001f);
-    float futureDistance = distanceBetween(future_a_pos, future_b_pos);
-    return (futureDistance < currentDistance);
+    float futureDistance2 = dist2(future_a_pos, future_b_pos);
+    return (futureDistance2 < currentDistance2);
 }
 
 /// Update velocity vectors from a collision to bounce away

@@ -22,7 +22,6 @@ struct RockConfig {
 
 inline float mass(const Rock& a)
 {
-    // much faster than using pow
     return a.radius * a.radius * a.radius;
 }
 
