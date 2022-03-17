@@ -12,12 +12,12 @@ Rock newRandomRock(const RockConfig& config)
     return rock;
 }
 
-float Rock::mass() const
+float mass(const Rock& a)
 {
-    return radius * radius * radius;
+    return a.radius * a.radius * a.radius;
 }
 
-float distanceBetween(const sf::Vector2f& a, const sf::Vector2f& b)
+inline float distanceBetween(const sf::Vector2f& a, const sf::Vector2f& b)
 {
     // note: hypot function was slower
     return sqrt((a.x - b.x) * (a.x - b.x) +
@@ -40,8 +40,8 @@ bool isColliding(const Rock& a, const Rock& b)
 /// Update velocity vectors from a collision to bounce away
 void updateForCollision(Rock& a, Rock& b)
 {
-    float a_mass = a.mass();
-    float b_mass = b.mass();
+    float a_mass = mass(a);
+    float b_mass = mass(b);
     sf::Vector2f a_new_vel = (a.vel * (a_mass - b_mass) + (2.0f * b_mass * b.vel)) / (a_mass + b_mass);
     sf::Vector2f b_new_vel = (b.vel * (b_mass - a_mass) + (2.0f * a_mass * a.vel)) / (a_mass + b_mass);
     a.vel = a_new_vel;
