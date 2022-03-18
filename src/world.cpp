@@ -114,12 +114,14 @@ void updateGravitySystem(World& world, float timestep)
 void updateGravitySystemPar(World& world, float timestep)
 {
     tbb::parallel_for_each(world.rocks, [timestep, &world](Rock& a) {
+        sf::Vector2f vel = a.vel;  // faster using a local counter
         for (const Rock& b : world.rocks) {
             if (&a != &b) {
                 auto acc = gravityAccel(a, b, world.gravity, world.ignoreShortDistGrav);
-                a.vel += (acc * timestep);
+                vel += (acc * timestep);
             }
         }
+        a.vel = vel;
     });
 }
 
