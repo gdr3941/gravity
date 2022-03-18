@@ -75,6 +75,7 @@ gravityAccelComponents(const Rock& a, const Rock& b, const float gConst, bool ig
     return {acc_a, acc_b};
 }
 
+inline
 sf::Vector2f gravityAccel(const Rock& a, const Rock& b, const float gConst, bool ignoreShortDist)
 {
     // util::Timer timer;
