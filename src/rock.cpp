@@ -6,8 +6,7 @@ namespace {
 inline float dist2(const sf::Vector2f& a, const sf::Vector2f& b)
 {
     // note: hypot function was slower
-    return (a.x - b.x) * (a.x - b.x) +
-                (a.y - b.y) * (a.y - b.y);
+    return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
 }
 
 }  // namespace
