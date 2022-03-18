@@ -21,3 +21,5 @@ using the combined system, running at same speed as before. Did not help.
 
 inlining now have 2000 @ 57fps on mac, 27 fps @ 3000 rocks on mac
 
+with first par, now @ 47fps @ 3000!
+

@@ -48,7 +48,7 @@ conan_basic_setup()
 # find system installed libraries and config. (Prefer using Conan)
 # Must also add resulting target to target_link_libraries
 # find_package(SFML REQUIRED system window graphics network audio)
-# find_package(TBB REQUIRED)  # not working from conan
+find_package(TBB REQUIRED)  # not working from conan
 
 # Alternative: add in-project source code libs that are cmake based
 # must also include the target (from add_library in cmake file) to link_libraries
@@ -67,6 +67,6 @@ add_executable(main ${PROJECT_SOURCE_DIR}/src/main.cpp)
 add_executable(tests ${test_files})
 
 # link library targets to executables
-target_link_libraries(lib ${CONAN_LIBS})
+target_link_libraries(lib ${CONAN_LIBS} TBB::tbb)
 target_link_libraries(main lib)
 target_link_libraries(tests PRIVATE lib)

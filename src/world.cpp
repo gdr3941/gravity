@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <cassert>
+#include <oneapi/tbb/parallel_for_each.h>
 #include "util.h"
 #include "world.hpp"
 
@@ -74,6 +75,21 @@ gravityAccelComponents(const Rock& a, const Rock& b, const float gConst, bool ig
     return {acc_a, acc_b};
 }
 
+sf::Vector2f gravityAccel(const Rock& a, const Rock& b, const float gConst, bool ignoreShortDist)
+{
+    // util::Timer timer;
+    sf::Vector2f pos_a = b.pos - a.pos;
+    float dist2 = pos_a.x * pos_a.x + pos_a.y * pos_a.y;
+    if (ignoreShortDist && dist2 < ((a.radius + b.radius) * (a.radius + b.radius))) {
+        // dont add gravity if overlapping to prevent overacceleration
+        return {0,0};
+    }
+    float dist = sqrt(dist2);
+    float g_a = gConst * mass(b) / dist2;
+    sf::Vector2f acc_a {(pos_a.x * g_a) / dist, (pos_a.y * g_a) / dist};
+    return acc_a;
+}
+
 //
 // Entity Systems
 //
@@ -91,6 +107,18 @@ void updateGravitySystem(World& world, float timestep)
         auto [a_acc, b_acc] = gravityAccelComponents(a, b, world.gravity, world.ignoreShortDistGrav);
         a.vel += (a_acc * timestep);
         b.vel += (b_acc * timestep);
+    });
+}
+
+void updateGravitySystemPar(World& world, float timestep)
+{
+    tbb::parallel_for_each(world.rocks, [timestep, &world](Rock& a) {
+        for (const Rock& b : world.rocks) {
+            if (&a != &b) {
+                auto acc = gravityAccel(a, b, world.gravity, world.ignoreShortDistGrav);
+                a.vel += (acc * timestep);
+            }
+        }
     });
 }
 

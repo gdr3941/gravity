@@ -33,6 +33,8 @@ void updateCollisionSystem(World& world);
 
 void updateGravitySystem(World& world, float timestep);
 
+void updateGravitySystemPar(World& world, float timestep);
+
 void updateRockPositionSystem(World& world, float timeStep);
 
 void updateShapeSystem(World& world);
