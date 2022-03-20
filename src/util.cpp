@@ -36,7 +36,8 @@ void Timer::Stop()
             .time_since_epoch();
     auto duration = end - start;
     double us = duration.count() * 0.001;
-    std::cout << duration.count() << " ns (" << us << " us)\n";
+    double ms = us * 0.001;
+    std::cout << duration.count() << " ns (" << us << " us) (" << ms << " ms)\n";
 }
 
 }  // namespace util
