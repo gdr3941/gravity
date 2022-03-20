@@ -16,13 +16,11 @@ struct TreeNode {
     std::vector<TreeNode> children;
 
     explicit TreeNode(float left, float right, float bottom, float top)
-        : left {left}, right {right}, bottom {bottom}, top {top} {
-        children.reserve(4);
-    }
+        : left {left}, right {right}, bottom {bottom}, top {top} {}
 
     inline float nodeWidth() { return right - left;}
 
-    inline bool contains(sf::Vector2f pos) {
+    inline bool contains(sf::Vector2f pos) const {
         return (pos.x >= left && pos.x < right && pos.y >= bottom && pos.y < top);
     }
 
