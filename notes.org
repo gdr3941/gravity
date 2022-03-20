@@ -1,4 +1,13 @@
 * Inbox
+** [2022-03-20 Sun 16:47] TreeNode Testing
+
+280 ms for 100 reps of 10000 with original getchild
+230 ms with fasr getchild - decided not to do
+185 ms by removing reserve capacity! (because not every node needs children..)
+Arena testing took 470ms!!!! This was using a common storage 
+vector that was not reallocated on each build cycle. Interesting
+that this was so much slower. See arenapass branch.
+
 ** [2022-03-14 Mon 20:33] Gravity Over Accel
 Another issue: at very small distances (sub radius), forces get really high
 When then sign flips due to collision system, get crazy high accelerations

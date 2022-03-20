@@ -151,14 +151,6 @@ void testTree()
         }
     }
 
-    // std::cout << "mass is " << t.total_mass << " center is "
-    //           << t.center_mass.x << ", " << t.center_mass.y << "\n";
-    // 3.3 ms for 10k on linux
-    // 3.8 ms with using direct if statement
-
-    // 280 ms for 100 reps of 10000 with original getchild
-    // 230 ms with fasr getchild - decided not to do
-
     // 185 ms by removing reserve capacity!
 }
 
