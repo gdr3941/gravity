@@ -13,6 +13,7 @@
 #include "util.h"
 #include "rock.hpp"
 #include "world.hpp"
+#include "tree.hpp"
 
 //
 // ImGui 

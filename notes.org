@@ -23,5 +23,6 @@ inlining now have 2000 @ 57fps on mac, 27 fps @ 3000 rocks on mac
 
 with first par, now @ 47fps @ 3000!
 using temp for vel counter now @ 53 fps @ 3000!
-with using just acc instead of vel inner look @ 55fps @ 3000
+with using just acc instead of vel inner look @ 55fps @ 3000 on mac
+on linux, running at 59fps flat @ 3000. Top bottleneck has shifted to isColliding.
 
