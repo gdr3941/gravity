@@ -137,6 +137,22 @@ void handleEvents(World& world)
 // Run Loop
 //
 
+void testTree ()
+{
+    World world(nullptr);
+    addRandomRocks(world, 10000, RockConfig {});
+    TreeNode t(-100.0f, 100.0f, -100.0f, 100.0f);
+    {
+        util::Timer timer;
+        for (auto& rock : world.rocks) {
+            t.insert(&rock);
+        }
+    }
+    std::cout << "mass is " << t.total_mass << " center is "
+              << t.center_mass.x << ", " << t.center_mass.y << "\n";
+    // 3.3 ms for 10k on linux
+}
+
 void run()
 {
     sf::RenderWindow window(sf::VideoMode(1500, 1500), "Gravity");
@@ -168,5 +184,6 @@ void run()
 
 int main()
 {
-    run();
+    testTree();
+    // run();
 }
