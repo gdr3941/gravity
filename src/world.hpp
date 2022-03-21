@@ -3,7 +3,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "rock.hpp"
-#include "tree.hpp"
 
 //
 // Simulation World that holds Entities and Config
@@ -16,8 +15,6 @@ struct World {
     float gravity {6.67408e-2f};
     bool ignoreShortDistGrav {true};
     float velColorExtent {20.0f};  // Vel for full red color
-    float worldExtent {1000.0f};  // Max extent of world
-    TreeNode tree;
 
     explicit World(sf::RenderWindow* window): window {window} {};
 };
@@ -31,8 +28,6 @@ void deleteAllRocks(World& world);
 //
 // Entity Systems
 //
-
-void updateTreeSystem(World& world);
 
 void updateCollisionSystem(World& world);
 

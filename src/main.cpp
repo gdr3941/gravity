@@ -144,7 +144,7 @@ void testTree()
     {
         util::Timer timer;
         for (auto i = 0; i < 100; ++i) {
-            TreeNode t(-1000.0f, 1000.0f, -1000.0f, 1000.0f);
+            TreeNode t(-100.0f, 100.0f, -100.0f, 100.0f);
             for (auto& rock : world.rocks) {
                 t.insert(&rock);
             }
@@ -171,7 +171,6 @@ void run()
     while (window.isOpen()) {
         handleEvents(world);
         sf::Time delta = clock.restart();
-        updateTreeSystem(world);
         // updateGravitySystem(world, delta.asSeconds());
         updateGravitySystemPar(world, delta.asSeconds());
         updateCollisionSystem(world);
@@ -186,6 +185,6 @@ void run()
 
 int main()
 {
-    // testTree();
-    run();
+    testTree();
+    // run();
 }
