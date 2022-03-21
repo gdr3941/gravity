@@ -2,8 +2,50 @@
 
 #include <optional>
 #include <vector>
+<<<<<<< HEAD
+=======
+#include <array>
+#include <span>
+>>>>>>> 0c07935 (add tree storage)
 #include <SFML/Graphics.hpp>
 #include "rock.hpp"
+
+template <class T>
+class TreeStorage {
+public:
+    using Iterator = typename std::vector<T>::iterator;
+    
+    explicit TreeStorage(size_t capacity) {
+        setCapacity(capacity);
+    }
+
+    // Old iterators may become invalid
+    void setCapacity(size_t capacity) {
+        if (elements.size() < capacity) {
+            elements = std::vector<T>(capacity);
+        }
+        reset();
+    }
+
+    void reset() {
+        iterator = elements.begin();
+        iterator = begin(elements);
+    }
+
+    size_t count() {
+        return (iterator - begin(elements));
+    }
+
+    std::vector<int>::iterator push_back(T&& item) {
+        assert(iterator < end(elements));
+        *iterator = item;
+        return iterator++; // increments after return
+    }
+
+private:
+    std::vector<T> elements;
+    Iterator iterator;
+};
 
 /// Tree to hold rocks
 /// Can be empty, have 1 rock element, or have children

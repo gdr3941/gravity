@@ -55,3 +55,15 @@ TEST_CASE("Tree Tests") {
     sf::Vector2f com = (mass(r)/total_mass) * r.pos + (mass(r2)/total_mass) * r2.pos;
     REQUIRE(fabs(t.center_mass.x - com.x) < 0.001);
 }
+
+TEST_CASE("TreeStorage Tests") {
+    TreeStorage<int> storage(1);
+    storage.setCapacity(3);
+    auto first = storage.push_back(10);
+    REQUIRE(*first == 10);
+    auto second = storage.push_back(12);
+    REQUIRE(*second == 12);
+    REQUIRE(storage.count() == 2);
+    storage.reset();
+    REQUIRE(storage.count() == 0);
+}
