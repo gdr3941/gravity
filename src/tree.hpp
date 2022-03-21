@@ -1,3 +1,5 @@
+#pragma once
+
 #include <optional>
 #include <vector>
 #include <SFML/Graphics.hpp>
@@ -15,6 +17,8 @@ struct TreeNode {
     Rock* element {nullptr};
     std::vector<TreeNode> children;
 
+    TreeNode() : TreeNode(0.0,0.0,0.0,0.0) {}
+    
     explicit TreeNode(float left, float right, float bottom, float top)
         : left {left}, right {right}, bottom {bottom}, top {top} {}
 
