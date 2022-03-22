@@ -24,7 +24,7 @@ TEST_CASE("vectors can be sized and resized") {
 }
 
 TEST_CASE("Tree Tests") {
-    TreeStorage<TreeNode> storage(100);
+    TreeStorage<TreeNode> storage(10);
     TreeNode t(0.0, 1.0, 0.0, 1.0);
     REQUIRE(!t.element);
     REQUIRE(!t.hasChildren());
