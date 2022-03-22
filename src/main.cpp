@@ -152,6 +152,8 @@ void testTree()
     }
 
     // 185 ms by removing reserve capacity!
+    // Mac:
+    // 512 ms for above using internal vector approach
 }
 
 void run()
@@ -186,6 +188,6 @@ void run()
 
 int main()
 {
-    // testTree();
-    run();
+    testTree();
+    // run();
 }
