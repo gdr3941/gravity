@@ -139,6 +139,9 @@ void handleEvents(World& world)
 
 void testTree()
 {
+
+    TreeStorage<TreeNode> storage(40000);
+    
     World world(nullptr);
     addRandomRocks(world, 10000, RockConfig{});
     {
@@ -146,8 +149,9 @@ void testTree()
         for (auto i = 0; i < 100; ++i) {
             TreeNode t(-1000.0f, 1000.0f, -1000.0f, 1000.0f);
             for (auto& rock : world.rocks) {
-                t.insert(&rock);
+                t.insert(&rock, storage);
             }
+            storage.reset();
         }
     }
 
@@ -173,7 +177,7 @@ void run()
     while (window.isOpen()) {
         handleEvents(world);
         sf::Time delta = clock.restart();
-        updateTreeSystem(world);
+        // updateTreeSystem(world);
         // updateGravitySystem(world, delta.asSeconds());
         updateGravitySystemPar(world, delta.asSeconds());
         updateCollisionSystem(world);

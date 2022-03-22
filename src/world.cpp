@@ -95,13 +95,13 @@ sf::Vector2f gravityAccel(const Rock& a, const Rock& b, const float gConst, bool
 // Entity Systems
 //
 
-void updateTreeSystem(World& world)
-{
-    world.tree = TreeNode(-world.worldExtent, world.worldExtent, -world.worldExtent, world.worldExtent);
-    for (auto& rock : world.rocks) {
-        world.tree.insert(&rock);
-    }
-}
+// void updateTreeSystem(World& world)
+// {
+//     world.tree = TreeNode(-world.worldExtent, world.worldExtent, -world.worldExtent, world.worldExtent);
+//     for (auto& rock : world.rocks) {
+//         world.tree.insert(&rock);
+//     }
+// }
 
 void updateCollisionSystem(World& world)
 {

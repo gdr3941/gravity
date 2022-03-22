@@ -24,21 +24,22 @@ TEST_CASE("vectors can be sized and resized") {
 }
 
 TEST_CASE("Tree Tests") {
+    TreeStorage<TreeNode> storage(100);
     TreeNode t(0.0, 1.0, 0.0, 1.0);
     REQUIRE(!t.element);
     REQUIRE(!t.hasChildren());
     Rock r = Rock {.pos = {0.1, 0.1}, .radius = 2.0f};
-    t.insert(&r);
+    t.insert(&r, storage);
     REQUIRE(t.element == &r);
     REQUIRE(!t.hasChildren());
     REQUIRE(t.total_mass == mass(r));
     REQUIRE(t.center_mass == r.pos);
     Rock r2 = Rock {.pos = {0.6, 0.6}, .radius = 2.0f};
-    t.insert(&r2);
+    t.insert(&r2, storage);
     REQUIRE(t.element == nullptr);
     REQUIRE(t.hasChildren());
-    TreeNode* r_node = t.getChild(r.pos);
-    TreeNode* r2_node = t.getChild(r2.pos);
+    TreeNode* r_node = t.getChild(r.pos, storage);
+    TreeNode* r2_node = t.getChild(r2.pos, storage);
     REQUIRE(r_node != r2_node);
     REQUIRE(r_node != &t);
     REQUIRE(r_node->element == &r);
@@ -47,7 +48,7 @@ TEST_CASE("Tree Tests") {
     REQUIRE(!r2_node->hasChildren());
     REQUIRE(r2_node->total_mass == mass(r2));
     REQUIRE(r2_node->center_mass == r2.pos);
-    TreeNode* r3_node = t.getChild({0.2, 0.6});
+    TreeNode* r3_node = t.getChild({0.2, 0.6}, storage);
     REQUIRE(r3_node->element == nullptr);
     REQUIRE(!r3_node->hasChildren());
     float total_mass = mass(r) + mass(r2);

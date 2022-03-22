@@ -4,6 +4,7 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "rock.hpp"
+#include <cassert>
 
 template <class T>
 class TreeStorage {
@@ -42,8 +43,8 @@ private:
     Iterator iterator;
 };
 
-/// Tree to hold rocks
-/// Can be empty, have 1 rock element, or have children
+// Tree to hold rocks
+// Can be empty, have 1 rock element, or have children
 struct TreeNode {
     float left {0.0f}; // inclusive
     float right {0.0f}; // exclusive
@@ -52,7 +53,7 @@ struct TreeNode {
     sf::Vector2f center_mass;
     float total_mass {0.0f};
     Rock* element {nullptr};
-    TreeStorage<TreeNode*>::Iterator childIter {};
+    TreeStorage<TreeNode>::Iterator childIter;
 
     TreeNode() : TreeNode(0.0,0.0,0.0,0.0) {}
     
@@ -65,29 +66,29 @@ struct TreeNode {
         return (pos.x >= left && pos.x < right && pos.y >= bottom && pos.y < top);
     }
 
-    bool hasChildren() { return children.size() > 0; }
+    bool hasChildren() { return (std::to_address(childIter)); }
 
-    void createChildren() {
+    void createChildren(TreeStorage<TreeNode>& storage) {
         float x_mid = left + (right-left) / 2.0f;
         float y_mid = bottom + (top-bottom) / 2.0f;
-        children.push_back(TreeNode(x_mid, right, y_mid, top)); // upper right = 0
-        children.push_back(TreeNode(x_mid, right, bottom, y_mid)); // lower right = 1
-        children.push_back(TreeNode(left, x_mid, bottom, y_mid)); // lower left = 2
-        children.push_back(TreeNode(left, x_mid, y_mid, top)); // upper left = 3
+        storage.push_back(TreeNode(x_mid, right, y_mid, top)); // upper right = 0
+        storage.push_back(TreeNode(x_mid, right, bottom, y_mid)); // lower right = 1
+        storage.push_back(TreeNode(left, x_mid, bottom, y_mid)); // lower left = 2
+        storage.push_back(TreeNode(left, x_mid, y_mid, top)); // upper left = 3
     }
 
-    TreeNode* getChild(sf::Vector2f pos) {
-        for (auto& child : children) {
-            if (child.contains(pos)) return &child;
+    TreeNode* getChild(sf::Vector2f pos, TreeStorage<TreeNode>& storage) {
+        for (size_t i = 0; i < 4; ++i) {
+            if ((*(childIter + i)).contains(pos)) return std::to_address(childIter+i);
         }
         return nullptr;
     }
 
-    TreeNode* insert(Rock* rock) {
+    TreeNode* insert(Rock* rock, TreeStorage<TreeNode>& storage) {
         float rockMass = mass(*rock); 
         if (hasChildren()) {
-            if (TreeNode* target = getChild(rock->pos); target) {
-                TreeNode* finalNode = target->insert(rock);
+            if (TreeNode* target = getChild(rock->pos, storage); target) {
+                TreeNode* finalNode = target->insert(rock, storage);
                 total_mass += rockMass;
                 center_mass += (rockMass / total_mass) * (rock->pos - center_mass);
                 return finalNode;
@@ -100,12 +101,12 @@ struct TreeNode {
             total_mass = rockMass;
             return this;
         } else {
-            createChildren();
+            createChildren(storage);
             center_mass = {0.0f, 0.0f};
             total_mass = 0.0f;
-            insert(element);
+            insert(element, storage);
             element = nullptr;
-            return insert(rock);
+            return insert(rock, storage);
         }
         return nullptr;
     }
