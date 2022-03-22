@@ -142,12 +142,12 @@ void testTree()
 
     TreeStorage<TreeNode> storage(40000);
     
-    World world(nullptr);
+    World world(nullptr, 1000.0f, 10000);
     addRandomRocks(world, 10000, RockConfig{});
     {
         util::Timer timer;
         for (auto i = 0; i < 100; ++i) {
-            TreeNode t(-1000.0f, 1000.0f, -1000.0f, 1000.0f);
+            TreeNode t(-500.0f, 500.0f, -500.0f, 500.0f);
             for (auto& rock : world.rocks) {
                 t.insert(&rock, storage);
             }
@@ -170,7 +170,7 @@ void run()
     ImGui::SFML::Init(window);
     loadFonts();
 
-    World world(&window);
+    World world(&window, 1000.0f, 4000);
     addRandomRocks(world, 100, RockConfig {});
     // addSatRocks(world);
 
@@ -178,7 +178,7 @@ void run()
     while (window.isOpen()) {
         handleEvents(world);
         sf::Time delta = clock.restart();
-        // updateTreeSystem(world);
+        updateTreeSystem(world);
         // updateGravitySystem(world, delta.asSeconds());
         updateGravitySystemPar(world, delta.asSeconds());
         updateCollisionSystem(world);
@@ -193,6 +193,6 @@ void run()
 
 int main()
 {
-    testTree();
-    // run();
+    // testTree();
+    run();
 }

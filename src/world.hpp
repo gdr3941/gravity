@@ -16,10 +16,18 @@ struct World {
     float gravity {6.67408e-2f};
     bool ignoreShortDistGrav {true};
     float velColorExtent {20.0f};  // Vel for full red color
-    float worldExtent {1000.0f};  // Max extent of world
-    TreeNode tree;
+    float worldExtent;  // Max extent of world +/-
+    TreeStorage<TreeNode> treeStorage;
+    TreeNode rootTree;
 
-    explicit World(sf::RenderWindow* window): window {window} {};
+    explicit World(sf::RenderWindow* window, float worldExtent, size_t rockCapacity)
+        : window {window},
+          worldExtent {worldExtent},
+          treeStorage {TreeStorage<TreeNode>(rockCapacity * 4)},
+        rootTree {TreeNode(-worldExtent, worldExtent, -worldExtent, worldExtent)} {
+        rocks.reserve(rockCapacity);
+        shapes.reserve(rockCapacity);
+    };
 };
 
 void addRandomRocks(World& world, size_t numRocks, RockConfig rockConfig);

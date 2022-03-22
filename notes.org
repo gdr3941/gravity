@@ -1,4 +1,6 @@
 * Inbox
+** [2022-03-22 Tue 12:09] Problem with two rocks at exact same pos causes infinite recursion building the Tree
+
 ** [2022-03-20 Sun 16:47] TreeNode Testing
 
 280 ms for 100 reps of 10000 with original getchild

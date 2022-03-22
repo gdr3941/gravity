@@ -7,8 +7,6 @@
 
 void addRandomRocks(World& world, size_t numRocks, RockConfig rockConfig)
 {
-    world.rocks.reserve(world.rocks.size() + numRocks);
-    world.shapes.reserve(world.shapes.size() + numRocks);
     for (size_t i = 0; i<numRocks; ++i) {
         Rock rock = newRandomRock(rockConfig);
         world.rocks.push_back(rock);
@@ -95,13 +93,13 @@ sf::Vector2f gravityAccel(const Rock& a, const Rock& b, const float gConst, bool
 // Entity Systems
 //
 
-// void updateTreeSystem(World& world)
-// {
-//     world.tree = TreeNode(-world.worldExtent, world.worldExtent, -world.worldExtent, world.worldExtent);
-//     for (auto& rock : world.rocks) {
-//         world.tree.insert(&rock);
-//     }
-// }
+void updateTreeSystem(World& world)
+{
+    world.treeStorage.reset();
+    for (auto& rock : world.rocks) {
+        world.rootTree.insert(&rock, world.treeStorage);
+    }
+}
 
 void updateCollisionSystem(World& world)
 {
