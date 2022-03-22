@@ -157,7 +157,7 @@ void testTree()
 
     // 185 ms by removing reserve capacity!
     // Mac:
-    // 512 ms for above using internal vector approach
+    // 450 ms for above using internal vector approach
     // 161 ms with new TreeStorage on mac
 }
 

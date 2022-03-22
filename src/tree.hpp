@@ -33,7 +33,9 @@ public:
     }
 
     Iterator push_back(T&& item) {
-        assert(iterator < end(elements));
+        if (iterator == end(elements)) {
+         throw std::out_of_range("Exceeded TreeStorage size");   
+        }
         *iterator = item;
         return iterator++; // increments after return
     }
