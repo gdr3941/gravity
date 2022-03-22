@@ -2,11 +2,6 @@
 
 #include <optional>
 #include <vector>
-<<<<<<< HEAD
-=======
-#include <array>
-#include <span>
->>>>>>> 0c07935 (add tree storage)
 #include <SFML/Graphics.hpp>
 #include "rock.hpp"
 
