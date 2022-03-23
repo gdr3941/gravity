@@ -190,6 +190,6 @@ void run()
 
 int main()
 {
-    // testTree();
-    run();
+    testTree();
+    // run();
 }
