@@ -171,7 +171,7 @@ void run()
     loadFonts();
 
     World world(&window, 1000.0f, 4000);
-    addRandomRocks(world, 100, RockConfig {});
+    addRandomRocks(world, 3, RockConfig {});
     // addSatRocks(world);
 
     sf::Clock clock;

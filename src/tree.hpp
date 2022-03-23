@@ -89,22 +89,31 @@ struct TreeNode {
     }
 
     TreeNode* insert(Rock* rock, TreeStorage<TreeNode>& storage) {
+        std::cout << "insert rock: " << rock->pos.x << "," << rock->pos.y << "\n";
         float rockMass = mass(*rock); 
         if (hasChildren()) {
             if (TreeNode* target = getChild(rock->pos, storage); target) {
+                std::cout << "Found child node that contains: " << &target << "\n";
                 TreeNode* finalNode = target->insert(rock, storage);
                 total_mass += rockMass;
                 center_mass += (rockMass / total_mass) * (rock->pos - center_mass);
                 return finalNode;
             } else {
+                std::cout << "NULLPTR\n";
                 return nullptr;
             }
         } else if (!element) {
+            std::cout<<"added to element @ " << this << ": " << rock->pos.x << "," << rock->pos.y << "\n";;
             element = rock;
             center_mass = rock->pos;
             total_mass = rockMass;
             return this;
         } else {
+            std::cout<<"creating children\n";
+            if (rock->pos == element->pos) {
+                std::cout<< "Warning: trying to add rock to tree at same point\n" <<
+                    "Pos: " << rock->pos.x << "," << rock->pos.y << "\n";
+            }
             createChildren(storage);
             center_mass = {0.0f, 0.0f};
             total_mass = 0.0f;

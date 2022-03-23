@@ -97,6 +97,7 @@ void updateTreeSystem(World& world)
 {
     world.treeStorage.reset();
     for (auto& rock : world.rocks) {
+        std::cout << "system insert rock: " << rock.pos.x << "," << rock.pos.y << "\n";
         world.rootTree.insert(&rock, world.treeStorage);
     }
 }
