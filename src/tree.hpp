@@ -1,3 +1,5 @@
+#pragma once
+
 #include <optional>
 #include <vector>
 #include <SFML/Graphics.hpp>
@@ -14,6 +16,8 @@ struct TreeNode {
     float total_mass {0.0f};
     Rock* element {nullptr};
     std::vector<TreeNode> children;
+
+    explicit TreeNode(float extent) : TreeNode(-extent, extent, -extent, extent) {}
 
     explicit TreeNode(float left, float right, float bottom, float top)
         : left {left}, right {right}, bottom {bottom}, top {top} {}
@@ -43,9 +47,11 @@ struct TreeNode {
     }
 
     TreeNode* insert(Rock* rock) {
+        // std::cout << "insert rock: " << rock->pos.x << "," << rock->pos.y << "\n";
         float rockMass = mass(*rock); 
         if (hasChildren()) {
             if (TreeNode* target = getChild(rock->pos); target) {
+                // std::cout << "Found child node that contains: " << &target << "\n";
                 TreeNode* finalNode = target->insert(rock);
                 total_mass += rockMass;
                 center_mass += (rockMass / total_mass) * (rock->pos - center_mass);
@@ -54,11 +60,17 @@ struct TreeNode {
                 return nullptr;
             }
         } else if (!element) {
+            // std::cout<<"added to element @ " << this << ": " << rock->pos.x << "," << rock->pos.y << "\n";;
             element = rock;
             center_mass = rock->pos;
             total_mass = rockMass;
             return this;
         } else {
+            // std::cout<<"creating children\n";
+            // if (rock->pos == element->pos) {
+            //     std::cout<< "Warning: trying to add rock to tree at same point\n" <<
+            //         "Pos: " << rock->pos.x << "," << rock->pos.y << "\n";
+            // }
             createChildren();
             center_mass = {0.0f, 0.0f};
             total_mass = 0.0f;

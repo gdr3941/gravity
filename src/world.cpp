@@ -95,6 +95,15 @@ sf::Vector2f gravityAccel(const Rock& a, const Rock& b, const float gConst, bool
 // Entity Systems
 //
 
+void updateTreeSystem(World& world)
+{
+    world.rootTree = TreeNode(world.worldExtent);
+    for (auto& rock : world.rocks) {
+        // std::cout << "system insert rock: " << rock.pos.x << "," << rock.pos.y << "\n";
+        world.rootTree.insert(&rock);
+    }
+}
+
 void updateCollisionSystem(World& world)
 {
     util::for_distinct_pairs(world.rocks, [](Rock& a, Rock& b){

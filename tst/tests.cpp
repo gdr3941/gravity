@@ -54,4 +54,8 @@ TEST_CASE("Tree Tests") {
     REQUIRE(fabs(t.total_mass - total_mass) < 0.001);
     sf::Vector2f com = (mass(r)/total_mass) * r.pos + (mass(r2)/total_mass) * r2.pos;
     REQUIRE(fabs(t.center_mass.x - com.x) < 0.001);
+    // Test when rocks are directly on top of each other
+    // Rock r4 {.pos = {0.1, 0.1}, .radius = 2.0f};
+    // auto r4_node = t.insert(&r4);
+    // REQUIRE(r4_node->element == &r4);
 }
