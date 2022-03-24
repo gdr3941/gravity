@@ -179,7 +179,8 @@ void run()
         // updateGravitySystem(world, delta.asSeconds());
         // updateGravitySystemPar(world, delta.asSeconds());
         updateGravitySystemTree(world, delta.asSeconds());
-        updateCollisionSystem(world);
+        // updateCollisionSystem(world);
+        updateCollisionSystemTree(world);
         updateRockPositionSystem(world, delta.asSeconds());
         updateShapeSystem(world);
         window.clear();

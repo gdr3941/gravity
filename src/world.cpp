@@ -56,7 +56,6 @@ sf::Color colorFromVelocity(const sf::Vector2f& vel, const float velExtent)
 std::pair<sf::Vector2f, sf::Vector2f>
 gravityAccelComponents(const Rock& a, const Rock& b, const float gConst, bool ignoreShortDist)
 {
-    // util::Timer timer;
     sf::Vector2f pos_a = b.pos - a.pos;
     float dist2 = pos_a.x * pos_a.x + pos_a.y * pos_a.y;
     if (ignoreShortDist && dist2 < ((a.radius + b.radius) * (a.radius + b.radius))) {
@@ -78,7 +77,6 @@ gravityAccelComponents(const Rock& a, const Rock& b, const float gConst, bool ig
 inline
 sf::Vector2f gravityAccel(const Rock& a, const Rock& b, const float gConst, bool ignoreShortDist)
 {
-    // util::Timer timer;
     sf::Vector2f pos_a = b.pos - a.pos;
     float dist2 = pos_a.x * pos_a.x + pos_a.y * pos_a.y;
     if (ignoreShortDist && dist2 < ((a.radius + b.radius) * (a.radius + b.radius))) {
@@ -121,6 +119,37 @@ sf::Vector2f gravityAccelTree(const World& world, const TreeNode& node, const Ro
     }
 }
 
+void processCollisionTree(const World& world, const TreeNode& node, Rock& a)
+{
+
+    if (node.element == &a) return;
+    if (node.element) {
+        // do collision check on these two rocks
+        if (isColliding(a, *node.element)) {
+            // FIX::need to do one sided check and update??
+            // And then can also integrate into parallel 
+            updateForCollision(a, *node.element);
+        }
+        return;
+    }
+
+    sf::Vector2f distV = node.center() - a.pos;
+    float dist2 = distV.x * distV.x + distV.y * distV.y;
+    // actual max from center inside a node is 1/sqrt(2) * node width
+    // yet to make math faster, just using width as worst case
+    float sum_radius = node.max_radius + node.nodeWidth() + a.radius;
+
+    if (dist2 > (sum_radius * sum_radius)) {
+        // means far enough away can ignore
+        return;
+    } else if (node.hasChildren()) {
+        // check child nodes
+        for (const auto& child : node.children) {
+            processCollisionTree(world, child, a);
+        }
+    } 
+}
+
 //
 // Entity Systems
 //
@@ -139,6 +168,13 @@ void updateCollisionSystem(World& world)
     util::for_distinct_pairs(world.rocks, [](Rock& a, Rock& b){
         if (isColliding(a, b)) { updateForCollision(a, b); };
     });
+}
+
+void updateCollisionSystemTree(World& world)
+{
+    for (Rock& rock : world.rocks) {
+        processCollisionTree(world, world.rootTree, rock);
+    }
 }
 
 void updateGravitySystem(World& world, float timestep)

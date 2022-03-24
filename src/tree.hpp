@@ -14,6 +14,7 @@ struct TreeNode {
     float top {0.0f}; // exclusive
     sf::Vector2f center_mass;
     float total_mass {0.0f};
+    float max_radius {0.0f}; // largest radius of element / children
     Rock* element {nullptr};
     std::vector<TreeNode> children;
 
@@ -23,6 +24,10 @@ struct TreeNode {
         : left {left}, right {right}, bottom {bottom}, top {top} {}
 
     inline float nodeWidth() const { return right - left;}
+
+    inline sf::Vector2f center() const {
+        return {(right-left) / 2.0f, (top - bottom) / 2.0f};
+    }
 
     inline bool contains(sf::Vector2f pos) const {
         return (pos.x >= left && pos.x < right && pos.y >= bottom && pos.y < top);
@@ -55,6 +60,7 @@ struct TreeNode {
                 TreeNode* finalNode = target->insert(rock);
                 total_mass += rockMass;
                 center_mass += (rockMass / total_mass) * (rock->pos - center_mass);
+                if (rock->radius > max_radius) max_radius = rock->radius;
                 return finalNode;
             } else {
                 return nullptr;
@@ -64,6 +70,7 @@ struct TreeNode {
             element = rock;
             center_mass = rock->pos;
             total_mass = rockMass;
+            max_radius = rock->radius;
             return this;
         } else {
             // std::cout<<"creating children\n";
@@ -75,6 +82,7 @@ struct TreeNode {
             createChildren();
             center_mass = {0.0f, 0.0f};
             total_mass = 0.0f;
+            max_radius = 0.0f;
             insert(element);
             element = nullptr;
             return insert(rock);

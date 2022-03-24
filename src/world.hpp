@@ -38,6 +38,8 @@ void updateTreeSystem(World& world);
 
 void updateCollisionSystem(World& world);
 
+void updateCollisionSystemTree(World& world);
+
 void updateGravitySystem(World& world, float timestep);
 
 void updateGravitySystemPar(World& world, float timestep);
