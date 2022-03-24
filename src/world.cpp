@@ -93,9 +93,10 @@ sf::Vector2f gravityAccel(const Rock& a, const Rock& b, const float gConst, bool
 
 sf::Vector2f gravityAccelTree(const World& world, const TreeNode& node, const Rock& a)
 {
-    // Getting all Nan returned!
     sf::Vector2f distV = node.center_mass - a.pos;
     float dist2 = distV.x*distV.x + distV.y*distV.y;
+    // Need to implement ignoreSmallRadius
+    if (dist2 < 0.0001) {return {};}  // if on top of COM (or is same as a), do nothing
     float dist = sqrt(dist2);
     if ((node.nodeWidth() / dist) < world.theta) {
         // use aggregrate mass
@@ -161,13 +162,9 @@ void updateGravitySystemPar(World& world, float timestep)
 
 void updateGravitySystemTree(World& world, float timestep)
 {
-    // tbb::parallel_for_each(world.rocks, [timestep, &world](Rock& a) {
-    for (Rock& a : world.rocks) { 
-        // a.vel += (gravityAccelTree(world, world.rootTree, a) * timestep);
-        auto v = gravityAccelTree(world, world.rootTree, a) * timestep;
-        std::cout << v.x << "\n";
-    };
-    // });
+    tbb::parallel_for_each(world.rocks, [timestep, &world](Rock& a) {
+        a.vel += (gravityAccelTree(world, world.rootTree, a) * timestep);
+    });
 }
 
 void updateRockPositionSystem(World& world, float timeStep)
