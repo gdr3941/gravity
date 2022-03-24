@@ -22,13 +22,13 @@ struct TreeNode {
     explicit TreeNode(float left, float right, float bottom, float top)
         : left {left}, right {right}, bottom {bottom}, top {top} {}
 
-    inline float nodeWidth() { return right - left;}
+    inline float nodeWidth() const { return right - left;}
 
     inline bool contains(sf::Vector2f pos) const {
         return (pos.x >= left && pos.x < right && pos.y >= bottom && pos.y < top);
     }
 
-    bool hasChildren() { return children.size() > 0; }
+    bool hasChildren() const { return children.size() > 0; }
 
     void createChildren() {
         float x_mid = left + (right-left) / 2.0f;
@@ -67,10 +67,11 @@ struct TreeNode {
             return this;
         } else {
             // std::cout<<"creating children\n";
-            // if (rock->pos == element->pos) {
-            //     std::cout<< "Warning: trying to add rock to tree at same point\n" <<
-            //         "Pos: " << rock->pos.x << "," << rock->pos.y << "\n";
-            // }
+            if (rock->pos == element->pos) {
+                std::cout<< "Warning: trying to add rock to tree at same point\n" <<
+                    "Pos: " << rock->pos.x << "," << rock->pos.y << "\n";
+                abort();
+            }
             createChildren();
             center_mass = {0.0f, 0.0f};
             total_mass = 0.0f;

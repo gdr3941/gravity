@@ -177,7 +177,8 @@ void run()
             updateTreeSystem(world);
         }
         // updateGravitySystem(world, delta.asSeconds());
-        updateGravitySystemPar(world, delta.asSeconds());
+        // updateGravitySystemPar(world, delta.asSeconds());
+        updateGravitySystemTree(world, delta.asSeconds());
         updateCollisionSystem(world);
         updateRockPositionSystem(world, delta.asSeconds());
         updateShapeSystem(world);
@@ -190,6 +191,6 @@ void run()
 
 int main()
 {
-    testTree();
-    // run();
+    // testTree();
+    run();
 }

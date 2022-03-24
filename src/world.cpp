@@ -91,6 +91,32 @@ sf::Vector2f gravityAccel(const Rock& a, const Rock& b, const float gConst, bool
     return acc_a;
 }
 
+sf::Vector2f gravityAccelTree(const World& world, const TreeNode& node, const Rock& a)
+{
+    // Getting all Nan returned!
+    sf::Vector2f distV = node.center_mass - a.pos;
+    float dist2 = distV.x*distV.x + distV.y*distV.y;
+    float dist = sqrt(dist2);
+    if ((node.nodeWidth() / dist) < world.theta) {
+        // use aggregrate mass
+        float g_a = world.gravity * node.total_mass / dist2;
+        return {(distV.x * g_a) / dist, (distV.y * g_a) / dist};
+    } else if (node.hasChildren()) {
+        // use children
+        sf::Vector2f acc_a {0.0,0.0};
+        for (const auto& child : node.children) {
+            acc_a += gravityAccelTree(world, child, a);
+        }
+        return acc_a;
+    } else if (!node.element) {
+        return {0.0f, 0.0f};
+    } else {
+        // single element @ node
+        float g_a = world.gravity * node.total_mass / dist2;
+        return {(distV.x * g_a) / dist, (distV.y * g_a) / dist};
+    }
+}
+
 //
 // Entity Systems
 //
@@ -131,6 +157,17 @@ void updateGravitySystemPar(World& world, float timestep)
         }
         a.vel += (acc * timestep);
     });
+}
+
+void updateGravitySystemTree(World& world, float timestep)
+{
+    // tbb::parallel_for_each(world.rocks, [timestep, &world](Rock& a) {
+    for (Rock& a : world.rocks) { 
+        // a.vel += (gravityAccelTree(world, world.rootTree, a) * timestep);
+        auto v = gravityAccelTree(world, world.rootTree, a) * timestep;
+        std::cout << v.x << "\n";
+    };
+    // });
 }
 
 void updateRockPositionSystem(World& world, float timeStep)

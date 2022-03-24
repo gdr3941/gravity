@@ -15,6 +15,7 @@ struct World {
     sf::RenderWindow* window;
     float gravity {6.67408e-2f};
     bool ignoreShortDistGrav {true};
+    float theta {0.5f}; // ratio of node size to dist to use node totals
     float velColorExtent {20.0f};  // Vel for full red color
     float worldExtent {1000.0f};  // Max extent of world +/-
     TreeNode rootTree;
@@ -40,6 +41,8 @@ void updateCollisionSystem(World& world);
 void updateGravitySystem(World& world, float timestep);
 
 void updateGravitySystemPar(World& world, float timestep);
+
+void updateGravitySystemTree(World& world, float timestep);
 
 void updateRockPositionSystem(World& world, float timeStep);
 
