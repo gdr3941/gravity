@@ -95,8 +95,7 @@ sf::Vector2f gravityAccelTree(const World& world, const TreeNode& node, const Ro
 {
     sf::Vector2f distV = node.center_mass - a.pos;
     float dist2 = distV.x*distV.x + distV.y*distV.y;
-    // Need to implement ignoreSmallRadius
-    if (dist2 < 0.0001) {return {};}  // if on top of COM (or is same as a), do nothing
+    if (dist2 < 0.00001) {return {0.0f, 0.0f};}  // if on top of COM (or is same as a), do nothing
     float dist = sqrt(dist2);
     if ((node.nodeWidth() / dist) < world.theta) {
         // use aggregrate mass
@@ -113,6 +112,10 @@ sf::Vector2f gravityAccelTree(const World& world, const TreeNode& node, const Ro
         return {0.0f, 0.0f};
     } else {
         // single element @ node
+        if (world.ignoreShortDistGrav && dist < (a.radius + node.element->radius)) {
+            // dont add gravity if overlapping to prevent overacceleration
+            return {0.0f, 0.0f};
+        }
         float g_a = world.gravity * node.total_mass / dist2;
         return {(distV.x * g_a) / dist, (distV.y * g_a) / dist};
     }
