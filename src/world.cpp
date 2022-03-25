@@ -121,26 +121,24 @@ sf::Vector2f gravityAccelTree(const World& world, const TreeNode& node, const Ro
 
 void processCollisionTree(const World& world, const TreeNode& node, Rock& a)
 {
-
-    if (node.element == &a) return;
     if (node.element) {
-        // do collision check on these two rocks
+        if (node.element <= &a) return; // prevents repeating pairs
         if (isColliding(a, *node.element)) {
-            // FIX::need to do one sided check and update??
-            // And then can also integrate into parallel 
             updateForCollision(a, *node.element);
+            return;
         }
-        return;
     }
-
     sf::Vector2f distV = node.center() - a.pos;
     float dist2 = distV.x * distV.x + distV.y * distV.y;
     // actual max from center inside a node is 1/sqrt(2) * node width
     // yet to make math faster, just using width as worst case
     float sum_radius = node.max_radius + node.nodeWidth() + a.radius;
-
     if (dist2 > (sum_radius * sum_radius)) {
+        // prob is def here, triggering when should not!
         // means far enough away can ignore
+        std::cout << "maxrad " << node.max_radius << " nodewidth "
+                  << node.nodeWidth() << " a.radius " << a.radius << " dist2 "
+                  << dist2 << "\n";
         return;
     } else if (node.hasChildren()) {
         // check child nodes

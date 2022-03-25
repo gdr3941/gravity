@@ -172,12 +172,7 @@ void run()
     while (window.isOpen()) {
         handleEvents(world);
         sf::Time delta = clock.restart();
-        {
-            // util::Timer t;
-            updateTreeSystem(world);
-        }
-        // updateGravitySystem(world, delta.asSeconds());
-        // updateGravitySystemPar(world, delta.asSeconds());
+        updateTreeSystem(world);
         updateGravitySystemTree(world, delta.asSeconds());
         // updateCollisionSystem(world);
         updateCollisionSystemTree(world);
