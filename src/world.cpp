@@ -56,7 +56,6 @@ sf::Color colorFromVelocity(const sf::Vector2f& vel, const float velExtent)
 std::pair<sf::Vector2f, sf::Vector2f>
 gravityAccelComponents(const Rock& a, const Rock& b, const float gConst, bool ignoreShortDist)
 {
-    // util::Timer timer;
     sf::Vector2f pos_a = b.pos - a.pos;
     float dist2 = pos_a.x * pos_a.x + pos_a.y * pos_a.y;
     if (ignoreShortDist && dist2 < ((a.radius + b.radius) * (a.radius + b.radius))) {
@@ -78,7 +77,6 @@ gravityAccelComponents(const Rock& a, const Rock& b, const float gConst, bool ig
 inline
 sf::Vector2f gravityAccel(const Rock& a, const Rock& b, const float gConst, bool ignoreShortDist)
 {
-    // util::Timer timer;
     sf::Vector2f pos_a = b.pos - a.pos;
     float dist2 = pos_a.x * pos_a.x + pos_a.y * pos_a.y;
     if (ignoreShortDist && dist2 < ((a.radius + b.radius) * (a.radius + b.radius))) {
@@ -91,15 +89,85 @@ sf::Vector2f gravityAccel(const Rock& a, const Rock& b, const float gConst, bool
     return acc_a;
 }
 
+sf::Vector2f gravityAccelTree(const World& world, const TreeNode& node, const Rock& a)
+{
+    sf::Vector2f distV = node.center_mass - a.pos;
+    float dist2 = distV.x*distV.x + distV.y*distV.y;
+    if (dist2 < 0.00001) {return {0.0f, 0.0f};}  // if on top of COM (or is same as a), do nothing
+    float dist = sqrt(dist2);
+    if ((node.nodeWidth() / dist) < world.theta) {
+        // use aggregrate mass
+        float g_a = world.gravity * node.total_mass / dist2;
+        return {(distV.x * g_a) / dist, (distV.y * g_a) / dist};
+    } else if (node.hasChildren()) {
+        // use children
+        sf::Vector2f acc_a {0.0,0.0};
+        for (const auto& child : node.children) {
+            acc_a += gravityAccelTree(world, child, a);
+        }
+        return acc_a;
+    } else if (!node.element) {
+        return {0.0f, 0.0f};
+    } else {
+        // single element @ node
+        if (world.ignoreShortDistGrav && dist < (a.radius + node.element->radius)) {
+            // dont add gravity if overlapping to prevent overacceleration
+            return {0.0f, 0.0f};
+        }
+        float g_a = world.gravity * node.total_mass / dist2;
+        return {(distV.x * g_a) / dist, (distV.y * g_a) / dist};
+    }
+}
+
+void processCollisionTree(const World& world, const TreeNode& node, Rock& a)
+{
+    if (node.element) {
+        if (node.element <= &a) return; // prevents repeating pairs
+        if (isColliding(a, *node.element)) {
+            updateForCollision(a, *node.element);
+            return;
+        }
+    }
+    sf::Vector2f distV = node.center() - a.pos;
+    float dist2 = distV.x * distV.x + distV.y * distV.y;
+    // actual max from center inside a node is 1/sqrt(2) * node width
+    // yet to make math faster, just using width as worst case
+    float sum_radius = node.max_radius + node.nodeWidth() + a.radius;
+    if (dist2 > (sum_radius * sum_radius)) {
+        // means far enough away can ignore
+        return;
+    } else if (node.hasChildren()) {
+        for (const auto& child : node.children) {
+            processCollisionTree(world, child, a);
+        }
+    } 
+}
+
 //
 // Entity Systems
 //
+
+void updateTreeSystem(World& world)
+{
+    world.rootTree = TreeNode(world.worldExtent);
+    for (auto& rock : world.rocks) {
+        // std::cout << "system insert rock: " << rock.pos.x << "," << rock.pos.y << "\n";
+        world.rootTree.insert(&rock);
+    }
+}
 
 void updateCollisionSystem(World& world)
 {
     util::for_distinct_pairs(world.rocks, [](Rock& a, Rock& b){
         if (isColliding(a, b)) { updateForCollision(a, b); };
     });
+}
+
+void updateCollisionSystemTree(World& world)
+{
+    for (Rock& rock : world.rocks) {
+        processCollisionTree(world, world.rootTree, rock);
+    }
 }
 
 void updateGravitySystem(World& world, float timestep)
@@ -121,6 +189,13 @@ void updateGravitySystemPar(World& world, float timestep)
             }
         }
         a.vel += (acc * timestep);
+    });
+}
+
+void updateGravitySystemTree(World& world, float timestep)
+{
+    tbb::parallel_for_each(world.rocks, [timestep, &world](Rock& a) {
+        a.vel += (gravityAccelTree(world, world.rootTree, a) * timestep);
     });
 }
 

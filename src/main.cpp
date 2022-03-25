@@ -144,14 +144,15 @@ void testTree()
     {
         util::Timer timer;
         for (auto i = 0; i < 100; ++i) {
-            TreeNode t(-100.0f, 100.0f, -100.0f, 100.0f);
+            TreeNode t(100.0f);
             for (auto& rock : world.rocks) {
                 t.insert(&rock);
             }
         }
     }
 
-    // 185 ms by removing reserve capacity!
+    // 185 ms by removing reserve capacity on Linux
+    // 470-500 ms on mac for 10k rocks 100x
 }
 
 void run()
@@ -171,9 +172,10 @@ void run()
     while (window.isOpen()) {
         handleEvents(world);
         sf::Time delta = clock.restart();
-        // updateGravitySystem(world, delta.asSeconds());
-        updateGravitySystemPar(world, delta.asSeconds());
-        updateCollisionSystem(world);
+        updateTreeSystem(world);
+        updateGravitySystemTree(world, delta.asSeconds());
+        // updateCollisionSystem(world);
+        updateCollisionSystemTree(world);
         updateRockPositionSystem(world, delta.asSeconds());
         updateShapeSystem(world);
         window.clear();
