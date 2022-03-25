@@ -53,42 +53,6 @@ sf::Color colorFromVelocity(const sf::Vector2f& vel, const float velExtent)
 // newAcceleration = force(time, position) / mass;
 // velocity += timestep * (acceleration + newAcceleration) / 2;
 
-std::pair<sf::Vector2f, sf::Vector2f>
-gravityAccelComponents(const Rock& a, const Rock& b, const float gConst, bool ignoreShortDist)
-{
-    sf::Vector2f pos_a = b.pos - a.pos;
-    float dist2 = pos_a.x * pos_a.x + pos_a.y * pos_a.y;
-    if (ignoreShortDist && dist2 < ((a.radius + b.radius) * (a.radius + b.radius))) {
-        // dont add gravity if overlapping to prevent overacceleration
-        return {{0,0}, {0,0}};
-    }
-    float dist = sqrt(dist2);
-
-    float g_a = gConst * mass(b) / dist2;
-    sf::Vector2f acc_a {(pos_a.x * g_a) / dist, (pos_a.y * g_a) / dist};
-
-    sf::Vector2f pos_b = -pos_a;
-    float g_b = gConst * mass(a) / dist2;
-    sf::Vector2f acc_b {(pos_b.x * g_b) / dist, (pos_b.y * g_b) / dist};
-    
-    return {acc_a, acc_b};
-}
-
-inline
-sf::Vector2f gravityAccel(const Rock& a, const Rock& b, const float gConst, bool ignoreShortDist)
-{
-    sf::Vector2f pos_a = b.pos - a.pos;
-    float dist2 = pos_a.x * pos_a.x + pos_a.y * pos_a.y;
-    if (ignoreShortDist && dist2 < ((a.radius + b.radius) * (a.radius + b.radius))) {
-        // dont add gravity if overlapping to prevent overacceleration
-        return {0,0};
-    }
-    float dist = sqrt(dist2);
-    float g_a = gConst * mass(b) / dist2;
-    sf::Vector2f acc_a {(pos_a.x * g_a) / dist, (pos_a.y * g_a) / dist};
-    return acc_a;
-}
-
 sf::Vector2f gravityAccelTree(const World& world, const TreeNode& node, const Rock& a)
 {
     sf::Vector2f distV = node.center_mass - a.pos;
@@ -151,16 +115,8 @@ void updateTreeSystem(World& world)
 {
     world.rootTree = TreeNode(world.worldExtent);
     for (auto& rock : world.rocks) {
-        // std::cout << "system insert rock: " << rock.pos.x << "," << rock.pos.y << "\n";
         world.rootTree.insert(&rock);
     }
-}
-
-void updateCollisionSystem(World& world)
-{
-    util::for_distinct_pairs(world.rocks, [](Rock& a, Rock& b){
-        if (isColliding(a, b)) { updateForCollision(a, b); };
-    });
 }
 
 void updateCollisionSystemTree(World& world)
@@ -168,28 +124,6 @@ void updateCollisionSystemTree(World& world)
     for (Rock& rock : world.rocks) {
         processCollisionTree(world, world.rootTree, rock);
     }
-}
-
-void updateGravitySystem(World& world, float timestep)
-{
-    util::for_distinct_pairs(world.rocks, [timestep, &world](Rock& a, Rock& b){
-        auto [a_acc, b_acc] = gravityAccelComponents(a, b, world.gravity, world.ignoreShortDistGrav);
-        a.vel += (a_acc * timestep);
-        b.vel += (b_acc * timestep);
-    });
-}
-
-void updateGravitySystemPar(World& world, float timestep)
-{
-    tbb::parallel_for_each(world.rocks, [timestep, &world](Rock& a) {
-        sf::Vector2f acc;
-        for (const Rock& b : world.rocks) {
-            if (&a != &b) {
-                acc += gravityAccel(a, b, world.gravity, world.ignoreShortDistGrav);
-            }
-        }
-        a.vel += (acc * timestep);
-    });
 }
 
 void updateGravitySystemTree(World& world, float timestep)

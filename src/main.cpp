@@ -174,7 +174,6 @@ void run()
         sf::Time delta = clock.restart();
         updateTreeSystem(world);
         updateGravitySystemTree(world, delta.asSeconds());
-        // updateCollisionSystem(world);
         updateCollisionSystemTree(world);
         updateRockPositionSystem(world, delta.asSeconds());
         updateShapeSystem(world);
