@@ -134,14 +134,9 @@ void processCollisionTree(const World& world, const TreeNode& node, Rock& a)
     // yet to make math faster, just using width as worst case
     float sum_radius = node.max_radius + node.nodeWidth() + a.radius;
     if (dist2 > (sum_radius * sum_radius)) {
-        // prob is def here, triggering when should not!
         // means far enough away can ignore
-        std::cout << "maxrad " << node.max_radius << " nodewidth "
-                  << node.nodeWidth() << " a.radius " << a.radius << " dist2 "
-                  << dist2 << "\n";
         return;
     } else if (node.hasChildren()) {
-        // check child nodes
         for (const auto& child : node.children) {
             processCollisionTree(world, child, a);
         }

@@ -26,7 +26,7 @@ struct TreeNode {
     inline float nodeWidth() const { return right - left;}
 
     inline sf::Vector2f center() const {
-        return {(right-left) / 2.0f, (top - bottom) / 2.0f};
+        return {left + nodeWidth() / 2.0f, bottom + nodeWidth() / 2.0f};
     }
 
     inline bool contains(sf::Vector2f pos) const {
