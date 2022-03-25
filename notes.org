@@ -1,4 +1,8 @@
 * Inbox
+** [2022-03-25 Fri 08:54] Perf Update
+Mac: with Tree 54 fps @ 10000 rocks
+
+
 ** [2022-03-20 Sun 16:47] TreeNode Testing
 
 280 ms for 100 reps of 10000 with original getchild
@@ -34,4 +38,5 @@ with first par, now @ 47fps @ 3000!
 using temp for vel counter now @ 53 fps @ 3000!
 with using just acc instead of vel inner look @ 55fps @ 3000 on mac
 on linux, running at 59fps flat @ 3000. Top bottleneck has shifted to isColliding.
+
 
