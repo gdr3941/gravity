@@ -38,6 +38,7 @@ struct TreeNode {
     void createChildren() {
         float x_mid = left + (right-left) / 2.0f;
         float y_mid = bottom + (top-bottom) / 2.0f;
+        children.reserve(4);
         children.push_back(TreeNode(x_mid, right, y_mid, top)); // upper right = 0
         children.push_back(TreeNode(x_mid, right, bottom, y_mid)); // lower right = 1
         children.push_back(TreeNode(left, x_mid, bottom, y_mid)); // lower left = 2
