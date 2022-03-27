@@ -1,4 +1,8 @@
 * Inbox
+** [2022-03-27 Sun 15:45] Alloocator
+Tried using monotonic allocator approach (see testAlloc branch)
+Benchmark was 180ms, no worse than the 165 I have before.
+
 ** [2022-03-27 Sun 10:03] Reserve
 On linux added reserve to create children drops benchmark from 185 to 165 ms
 This is different from my earlier reserve attempt which did the reserve
