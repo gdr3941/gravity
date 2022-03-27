@@ -1,7 +1,7 @@
 * Inbox
 ** [2022-03-25 Fri 08:54] Perf Update
 Mac: with Tree 54 fps @ 10000 rocks vs 5fps before (old collision detection)
-
+Linux: still at full fps @ 10000 rocks!
 
 ** [2022-03-20 Sun 16:47] TreeNode Testing
 

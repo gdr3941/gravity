@@ -55,14 +55,14 @@ sf::Color colorFromVelocity(const sf::Vector2f& vel, const float velExtent)
 
 sf::Vector2f gravityAccelTree(const World& world, const TreeNode& node, const Rock& a)
 {
-    sf::Vector2f distV = node.center_mass - a.pos;
-    float dist2 = distV.x*distV.x + distV.y*distV.y;
+    sf::Vector2f pos_vec = node.center_mass - a.pos;
+    float dist2 = pos_vec.x * pos_vec.x + pos_vec.y * pos_vec.y;
     if (dist2 < 0.00001) {return {0.0f, 0.0f};}  // if on top of COM (or is same as a), do nothing
     float dist = sqrt(dist2);
     if ((node.nodeWidth() / dist) < world.theta) {
         // use aggregrate mass
-        float g_a = world.gravity * node.total_mass / dist2;
-        return {(distV.x * g_a) / dist, (distV.y * g_a) / dist};
+        float grav_a = world.gravity * node.total_mass / dist2;
+        return {(pos_vec.x * grav_a) / dist, (pos_vec.y * grav_a) / dist};
     } else if (node.hasChildren()) {
         // use children
         sf::Vector2f acc_a {0.0,0.0};
@@ -75,11 +75,10 @@ sf::Vector2f gravityAccelTree(const World& world, const TreeNode& node, const Ro
     } else {
         // single element @ node
         if (world.ignoreShortDistGrav && dist < (a.radius + node.element->radius)) {
-            // dont add gravity if overlapping to prevent overacceleration
             return {0.0f, 0.0f};
         }
-        float g_a = world.gravity * node.total_mass / dist2;
-        return {(distV.x * g_a) / dist, (distV.y * g_a) / dist};
+        float grav_a = world.gravity * node.total_mass / dist2;
+        return {(pos_vec.x * grav_a) / dist, (pos_vec.y * grav_a) / dist};
     }
 }
 
@@ -92,8 +91,8 @@ void processCollisionTree(const World& world, const TreeNode& node, Rock& a)
             return;
         }
     }
-    sf::Vector2f distV = node.center() - a.pos;
-    float dist2 = distV.x * distV.x + distV.y * distV.y;
+    sf::Vector2f pos_v = node.center() - a.pos;
+    float dist2 = pos_v.x * pos_v.x + pos_v.y * pos_v.y;
     // actual max from center inside a node is 1/sqrt(2) * node width
     // yet to make math faster, just using width as worst case
     float sum_radius = node.max_radius + node.nodeWidth() + a.radius;

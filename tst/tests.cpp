@@ -33,7 +33,8 @@ TEST_CASE("Tree Tests") {
     REQUIRE(!t.hasChildren());
     REQUIRE(t.total_mass == mass(r));
     REQUIRE(t.center_mass == r.pos);
-    Rock r2 = Rock {.pos = {0.6, 0.6}, .radius = 2.0f};
+    REQUIRE(t.max_radius == r.radius);
+    Rock r2 = Rock {.pos = {0.6, 0.6}, .radius = 4.0f};
     t.insert(&r2);
     REQUIRE(t.element == nullptr);
     REQUIRE(t.hasChildren());
@@ -42,6 +43,7 @@ TEST_CASE("Tree Tests") {
     REQUIRE(r_node != r2_node);
     REQUIRE(r_node != &t);
     REQUIRE(r_node->element == &r);
+    REQUIRE(t.max_radius == 4.0f);
     REQUIRE(!r_node->hasChildren());
     REQUIRE(r2_node->element == &r2);
     REQUIRE(!r2_node->hasChildren());
