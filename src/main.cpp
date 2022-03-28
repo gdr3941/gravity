@@ -51,6 +51,10 @@ void drawUI(World& world, sf::Time delta)
         addRandomRocks(world, addRocks, rockConfig);
     }
     ImGui::SameLine();
+    if (ImGui::Button("Add 1000")) {
+        addRandomRocks(world, 1000, rockConfig);
+    }
+    ImGui::SameLine();
     if (ImGui::Button("Restart")) {
         deleteAllRocks(world);
         addRandomRocks(world, addRocks, rockConfig);
