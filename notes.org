@@ -2,6 +2,9 @@
 ** [2022-03-27 Sun 15:45] Alloocator
 Tried using monotonic allocator approach (see testAlloc branch)
 Benchmark was 180ms, no worse than the 165 I have before.
+Bottom line is that using the std::vector implementation in Tree has been the
+fastest despite doing allocations. Maybe it is still fast because it is many 
+small allocations that are repeated and it gets optimized.
 
 ** [2022-03-27 Sun 10:03] Reserve
 On linux added reserve to create children drops benchmark from 185 to 165 ms
