@@ -1,6 +1,5 @@
 #pragma once
 
-#include <optional>
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "rock.hpp"
