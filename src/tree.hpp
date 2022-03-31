@@ -52,12 +52,11 @@ struct TreeNode {
     }
 
     TreeNode* insert(Rock* rock) {
-        float rockMass = mass(*rock); 
         if (hasChildren()) {
             if (TreeNode* target = getChild(rock->pos); target) {
                 TreeNode* finalNode = target->insert(rock);
-                total_mass += rockMass;
-                center_mass += (rockMass / total_mass) * (rock->pos - center_mass);
+                total_mass += rock->mass;
+                center_mass += (rock->mass / total_mass) * (rock->pos - center_mass);
                 if (rock->radius > max_radius) max_radius = rock->radius;
                 return finalNode;
             } else {
@@ -66,7 +65,7 @@ struct TreeNode {
         } else if (!element) {
             element = rock;
             center_mass = rock->pos;
-            total_mass = rockMass;
+            total_mass = rock->mass;
             max_radius = rock->radius;
             return this;
         } else {
