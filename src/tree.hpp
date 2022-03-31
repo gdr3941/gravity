@@ -51,23 +51,21 @@ struct TreeNode {
         return nullptr;
     }
 
-    TreeNode* insert(Rock* rock) {
+    void insert(Rock* rock) {
         if (hasChildren()) {
             if (TreeNode* target = getChild(rock->pos); target) {
-                TreeNode* finalNode = target->insert(rock);
+                target->insert(rock);
                 total_mass += rock->mass;
                 center_mass += (rock->mass / total_mass) * (rock->pos - center_mass);
                 if (rock->radius > max_radius) max_radius = rock->radius;
-                return finalNode;
-            } else {
-                return nullptr;
-            }
+            } 
+            return;
         } else if (!element) {
             element = rock;
             center_mass = rock->pos;
             total_mass = rock->mass;
             max_radius = rock->radius;
-            return this;
+            return;
         } else {
             if (rock->pos == element->pos) {
                 std::cout<< "Warning: trying to add rock to tree at same point\n" <<
@@ -80,8 +78,8 @@ struct TreeNode {
             max_radius = 0.0f;
             insert(element);
             element = nullptr;
-            return insert(rock);
+            insert(rock);
+            return;
         }
-        return nullptr;
     }
 };
