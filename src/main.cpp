@@ -158,6 +158,7 @@ void testTree()
     // 165ms on linux after adding reservce back in for children
     // 470-500 ms on mac for 10k rocks 100x
     // 382ms after removing mass calc on mac
+    // 330ms after removing inline returns in tree insert
 }
 
 void run()

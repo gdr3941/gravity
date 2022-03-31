@@ -59,13 +59,11 @@ struct TreeNode {
                 center_mass += (rock->mass / total_mass) * (rock->pos - center_mass);
                 if (rock->radius > max_radius) max_radius = rock->radius;
             } 
-            return;
         } else if (!element) {
             element = rock;
             center_mass = rock->pos;
             total_mass = rock->mass;
             max_radius = rock->radius;
-            return;
         } else {
             if (rock->pos == element->pos) {
                 std::cout<< "Warning: trying to add rock to tree at same point\n" <<
@@ -79,7 +77,6 @@ struct TreeNode {
             insert(element);
             element = nullptr;
             insert(rock);
-            return;
         }
     }
 };
