@@ -1,6 +1,5 @@
 #pragma once
 
-#include <optional>
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "rock.hpp"
@@ -52,24 +51,19 @@ struct TreeNode {
         return nullptr;
     }
 
-    TreeNode* insert(Rock* rock) {
-        float rockMass = mass(*rock); 
+    void insert(Rock* rock) {
         if (hasChildren()) {
             if (TreeNode* target = getChild(rock->pos); target) {
-                TreeNode* finalNode = target->insert(rock);
-                total_mass += rockMass;
-                center_mass += (rockMass / total_mass) * (rock->pos - center_mass);
+                target->insert(rock);
+                total_mass += rock->mass;
+                center_mass += (rock->mass / total_mass) * (rock->pos - center_mass);
                 if (rock->radius > max_radius) max_radius = rock->radius;
-                return finalNode;
-            } else {
-                return nullptr;
-            }
+            } 
         } else if (!element) {
             element = rock;
             center_mass = rock->pos;
-            total_mass = rockMass;
+            total_mass = rock->mass;
             max_radius = rock->radius;
-            return this;
         } else {
             if (rock->pos == element->pos) {
                 std::cout<< "Warning: trying to add rock to tree at same point\n" <<
@@ -82,8 +76,7 @@ struct TreeNode {
             max_radius = 0.0f;
             insert(element);
             element = nullptr;
-            return insert(rock);
+            insert(rock);
         }
-        return nullptr;
     }
 };

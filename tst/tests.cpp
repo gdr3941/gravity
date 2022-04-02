@@ -27,14 +27,14 @@ TEST_CASE("Tree Tests") {
     TreeNode t(0.0, 1.0, 0.0, 1.0);
     REQUIRE(!t.element);
     REQUIRE(!t.hasChildren());
-    Rock r = Rock {.pos = {0.1, 0.1}, .radius = 2.0f};
+    Rock r = Rock {.pos = {0.1, 0.1}, .radius = 2.0f, .mass = 8.0f};
     t.insert(&r);
     REQUIRE(t.element == &r);
     REQUIRE(!t.hasChildren());
-    REQUIRE(t.total_mass == mass(r));
+    REQUIRE(t.total_mass == r.mass);
     REQUIRE(t.center_mass == r.pos);
     REQUIRE(t.max_radius == r.radius);
-    Rock r2 = Rock {.pos = {0.6, 0.6}, .radius = 4.0f};
+    Rock r2 = Rock {.pos = {0.6, 0.6}, .radius = 4.0f, .mass = 64.0f};
     t.insert(&r2);
     REQUIRE(t.element == nullptr);
     REQUIRE(t.hasChildren());
@@ -47,14 +47,14 @@ TEST_CASE("Tree Tests") {
     REQUIRE(!r_node->hasChildren());
     REQUIRE(r2_node->element == &r2);
     REQUIRE(!r2_node->hasChildren());
-    REQUIRE(r2_node->total_mass == mass(r2));
+    REQUIRE(r2_node->total_mass == r2.mass);
     REQUIRE(r2_node->center_mass == r2.pos);
     TreeNode* r3_node = t.getChild({0.2, 0.6});
     REQUIRE(r3_node->element == nullptr);
     REQUIRE(!r3_node->hasChildren());
-    float total_mass = mass(r) + mass(r2);
+    float total_mass = r.mass + r2.mass;
     REQUIRE(fabs(t.total_mass - total_mass) < 0.001);
-    sf::Vector2f com = (mass(r)/total_mass) * r.pos + (mass(r2)/total_mass) * r2.pos;
+    sf::Vector2f com = (r.mass/total_mass) * r.pos + (r2.mass/total_mass) * r2.pos;
     REQUIRE(fabs(t.center_mass.x - com.x) < 0.001);
     // Test when rocks are directly on top of each other
     // Rock r4 {.pos = {0.1, 0.1}, .radius = 2.0f};

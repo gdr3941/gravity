@@ -19,6 +19,7 @@ Rock newRandomRock(const RockConfig& config)
     rock.vel.x = util::f_rand(-config.velExtent, config.velExtent);
     rock.vel.y = util::f_rand(-config.velExtent, config.velExtent);
     rock.radius = util::f_rand(config.radiusMin, config.radiusMax);
+    rock.mass = rock.radius * rock.radius * rock.radius;
     return rock;
 }
 
@@ -38,10 +39,8 @@ bool isColliding(const Rock& a, const Rock& b)
 /// Update velocity vectors from a collision to bounce away
 void updateForCollision(Rock& a, Rock& b)
 {
-    float a_mass = mass(a);
-    float b_mass = mass(b);
-    sf::Vector2f a_new_vel = (a.vel * (a_mass - b_mass) + (2.0f * b_mass * b.vel)) / (a_mass + b_mass);
-    sf::Vector2f b_new_vel = (b.vel * (b_mass - a_mass) + (2.0f * a_mass * a.vel)) / (a_mass + b_mass);
+    sf::Vector2f a_new_vel = (a.vel * (a.mass - b.mass) + (2.0f * b.mass * b.vel)) / (a.mass + b.mass);
+    sf::Vector2f b_new_vel = (b.vel * (b.mass - a.mass) + (2.0f * a.mass * a.vel)) / (a.mass + b.mass);
     a.vel = a_new_vel;
     b.vel = b_new_vel;
 }
