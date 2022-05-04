@@ -21,7 +21,7 @@ private:
 };
 
 /// calls f for all distinct pairs from collection
-/// ex: {1,2,3} => (1,2) (1,3) (2,3)
+/// ex: [1,2,3] => (1,2) (1,3) (2,3)
 template <class Iterable, class BinaryOp>
 void for_distinct_pairs(Iterable& container, BinaryOp&& f)
 {
