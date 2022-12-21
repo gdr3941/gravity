@@ -5,38 +5,8 @@
 #include "util.h"
 #include "world.hpp"
 
-void addRandomRocks(World& world, size_t numRocks, RockConfig rockConfig)
-{
-    world.rocks.reserve(world.rocks.size() + numRocks);
-    world.shapes.reserve(world.shapes.size() + numRocks);
-    for (size_t i = 0; i<numRocks; ++i) {
-        Rock rock = newRandomRock(rockConfig);
-        world.rocks.push_back(rock);
-        world.shapes.push_back(shapeFor(rock));
-    }
-}
-
-void addSatRocks(World& world)
-{
-    world.rocks.push_back(Rock {.pos = {0,0}, .vel = {0,0}, .radius = 20.0f, .mass = 8000.0f});
-    for (size_t i = 4; i < 10; ++i) {
-        world.rocks.push_back(Rock {.pos = {i*5.0f,0}, .vel = {0, 4.0}, .radius = 2.0, .mass = 8.0f});
-    }
-    for (auto& rock: world.rocks) {
-        world.shapes.push_back(shapeFor(rock));
-    }
-}
-
-void deleteAllRocks(World& world)
-{
-    world.rocks = {};
-    world.shapes = {};
-}
-
-//
-// System Helpers
-// 
-
+namespace {
+ 
 sf::Color colorFromVelocity(const sf::Vector2f& vel, const float velExtent)
 {
     float vel_percent = ((vel.x * vel.x + vel.y * vel.y)
@@ -104,6 +74,40 @@ void processCollisionTree(const World& world, const TreeNode& node, Rock& a)
             processCollisionTree(world, child, a);
         }
     } 
+}
+
+}  // namespace
+
+//
+// General Functions
+//
+
+void addRandomRocks(World& world, size_t numRocks, RockConfig rockConfig)
+{
+    world.rocks.reserve(world.rocks.size() + numRocks);
+    world.shapes.reserve(world.shapes.size() + numRocks);
+    for (size_t i = 0; i<numRocks; ++i) {
+        Rock rock = newRandomRock(rockConfig);
+        world.rocks.push_back(rock);
+        world.shapes.push_back(shapeFor(rock));
+    }
+}
+
+void addSatRocks(World& world)
+{
+    world.rocks.push_back(Rock {.pos = {0,0}, .vel = {0,0}, .radius = 20.0f});
+    for (size_t i = 4; i < 10; ++i) {
+        world.rocks.push_back(Rock {.pos = {i*5.0f,0}, .vel = {0, 4.0}, .radius = 2.0});
+    }
+    for (auto& rock: world.rocks) {
+        world.shapes.push_back(shapeFor(rock));
+    }
+}
+
+void deleteAllRocks(World& world)
+{
+    world.rocks = {};
+    world.shapes = {};
 }
 
 //
