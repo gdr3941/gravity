@@ -57,6 +57,8 @@ add_subdirectory(extern/imgui-sfml)
 
 # also see this blog post: https://eliasdaler.github.io/using-cmake/
 
+# PROBLEM: I did not use submodules so the files are not pulling down in the extern directories
+
 # create the application library target that has all code except main. This enables building the
 # main and test executables seperately without compiling application twice.
 add_library(lib ${source_files})
