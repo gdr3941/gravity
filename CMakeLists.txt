@@ -22,6 +22,7 @@ project(Gravity)
 # compiler options for application build
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+# disabled due to errors compiling against system opengl?
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 # Enable sanitizers if desired to check for memory errors and undefined behavior
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined -fsanitize=address")
