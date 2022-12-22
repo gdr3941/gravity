@@ -5,3 +5,4 @@ perf.data.old
 build/**
 bin/**
 /.vscode/
+.DS_Store

@@ -3,7 +3,7 @@
 # or use build script: ./build.sh
 
 [requires]
-doctest/2.4.8
+# doctest/2.4.8
 fmt/8.1.1
 sfml/2.5.1
 # range-v3/0.11.0

@@ -3,9 +3,7 @@
 # Key files in addition to this one for setting up the project
 # .dirs.local.el        sets the build and test commands
 # src/.clang-format     options for clang-format
-# conanfile.txt         dependancies
 # build.sh              helper to setup and do initial builds
-# ~/.conan/profiles     profiles for defining how project deps are compiled
 #
 # C-c C-c   Build and Run
 # C-c C-b   Build (and can change from Debug to Release if desired)
@@ -16,8 +14,6 @@
 # To do this, it first builds a library from all the application code except main.
 # It then uses this to link against the main executable and also the test executable.
 #
-# Dependencies are managed by Conan. See conanfile.txt.
-
 cmake_minimum_required(VERSION 3.20)
 
 # set the project name
@@ -26,10 +22,11 @@ project(Gravity)
 # compiler options for application build
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 # Enable sanitizers if desired to check for memory errors and undefined behavior
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined -fsanitize=address")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_OSX_ARCHITECTURES "arm64")
 
 # project source and test files
 set (source_dir "${PROJECT_SOURCE_DIR}/src/")
@@ -38,21 +35,25 @@ list(REMOVE_ITEM source_files "${source_dir}/main.cpp")  # pull out main so we c
 set (test_dir "${PROJECT_SOURCE_DIR}/tst/")
 file (GLOB test_files "${test_dir}/*.cpp")
 
-# local project header libs included manually. (Prefer using Conan)
+# local project header only libs included manually
 include_directories(include)
 
-# conan setup
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
-
-# find system installed libraries and config. (Prefer using Conan)
+# find system installed libraries and config.
 # Must also add resulting target to target_link_libraries
 # find_package(SFML REQUIRED system window graphics network audio)
-find_package(TBB REQUIRED)  # not working from conan
+find_package(TBB REQUIRED)
 
-# Alternative: add in-project source code libs that are cmake based
+# imgui-sfml needs to know where sfml cmake config is stored
+set(SFML_DIR "${PROJECT_SOURCE_DIR}/extern/SFML/build")
+# imgui-sfml needs to know where imgui is installed
+set(IMGUI_DIR "${PROJECT_SOURCE_DIR}/include/imgui")
+
+# Add local project cmake libraries (ie. don't use system installed)
 # must also include the target (from add_library in cmake file) to link_libraries
 # add_subdirectory(extern/fplus)
+add_subdirectory(extern/SFML)
+add_subdirectory(extern/imgui-sfml)
+
 # also see this blog post: https://eliasdaler.github.io/using-cmake/
 
 # create the application library target that has all code except main. This enables building the
@@ -60,13 +61,13 @@ find_package(TBB REQUIRED)  # not working from conan
 add_library(lib ${source_files})
 
 # add resource file to bin directory
-configure_file("${PROJECT_SOURCE_DIR}/resources/arial.ttf" "${PROJECT_SOURCE_DIR}/build/bin/arial.ttf" COPYONLY)
+configure_file("${PROJECT_SOURCE_DIR}/resources/arial.ttf" "${PROJECT_SOURCE_DIR}/build/arial.ttf" COPYONLY)
 
 # build executable targets
 add_executable(main ${PROJECT_SOURCE_DIR}/src/main.cpp)
 add_executable(tests ${test_files})
 
 # link library targets to executables
-target_link_libraries(lib ${CONAN_LIBS} TBB::tbb)
+target_link_libraries(lib TBB::tbb ${SFML_LIBRARIES} ImGui-SFML::ImGui-SFML)
 target_link_libraries(main lib)
 target_link_libraries(tests PRIVATE lib)
