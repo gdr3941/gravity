@@ -28,7 +28,7 @@ void loadFonts()
     #else
     io.Fonts->AddFontFromFileTTF("arial.ttf", 26.0f);
     #endif
-    ImGui::SFML::UpdateFontTexture();
+    bool success = ImGui::SFML::UpdateFontTexture();
 }
 
 void drawUI(World& world, sf::Time delta)
@@ -167,7 +167,7 @@ void run()
     window.setFramerateLimit(60);
     sf::View view (sf::Vector2f(0,0), sf::Vector2f(200,200));
     window.setView(view);
-    ImGui::SFML::Init(window);
+    bool success = ImGui::SFML::Init(window);
     loadFonts();
 
     World world(&window);

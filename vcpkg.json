@@ -1,0 +1,12 @@
+{
+    "name": "gravity",
+    "version": "2.1",
+    "dependencies":[
+        "tbb",
+        "sfml",
+        "imgui",
+        "imgui-sfml",
+        "fmt",
+        "doctest"
+    ]
+}

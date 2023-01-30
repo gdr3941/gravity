@@ -1,4 +1,10 @@
 * Inbox
+
+** Switched to vcpkg
+Much better and simpler for loading dependancies
+vcpkg.json is the manifest of libraries needed
+CMakeLists.txt then uses find_package to refer to find these installed dependancies 
+
 ** [2022-03-27 Sun 15:45] Alloocator
 Tried using monotonic allocator approach (see testAlloc branch)
 Benchmark was 180ms, no worse than the 165 I have before.
