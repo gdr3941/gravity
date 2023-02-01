@@ -1,7 +1,6 @@
-((nil . ((compile-command . "cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build .")
-         (projectile-project-compilation-cmd . "cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build .")
-         (projectile-project-test-cmd . "cd build && cmake .. && cmake --build . -t tests && ./tests")
-         (projectile-project-run-cmd . "cd build && cmake .. && cmake --build . && ./main")))
+((nil . ((projectile-project-compilation-cmd . "cmake -H. -Bbuild -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug && cmake --build build")
+         (projectile-project-test-cmd . "cmake --build build -t tests && build/tests")
+         (projectile-project-run-cmd . "cmake --build build && cd build && ./main")))
  (c++-mode . ((lsp-clients-clangd-args . ("--compile-commands-dir=build"
                                           "--pch-storage=memory"
                                           "--background-index"

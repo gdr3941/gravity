@@ -5,8 +5,8 @@
 # src/.clang-format     options for clang-format
 # build.sh              helper to setup and do initial builds
 #
-# C-c C-c   Build and Run
-# C-c C-b   Build (and can change from Debug to Release if desired)
+# C-c C-c   Compile and Run
+# C-c C-b   Full build pulling in dependencies as needed using vcpkg
 # C-c C-t   Run tests
 # C-c C-d   Debug 
 
@@ -49,7 +49,7 @@ find_package(doctest REQUIRED)
 # main and test executables seperately without compiling application twice.
 add_library(lib ${source_files})
 
-# add resource file to bin directory
+# add resource file to build directory
 configure_file("${PROJECT_SOURCE_DIR}/resources/arial.ttf" "${PROJECT_SOURCE_DIR}/build/arial.ttf" COPYONLY)
 
 # build executable targets
