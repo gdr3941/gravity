@@ -6,7 +6,7 @@
 # build.sh              helper to setup and do initial builds
 #
 # C-c C-c   Compile and Run
-# C-c C-b   Full build pulling in dependencies as needed using vcpkg
+# C-c C-b   Configure build (w/cmake+vcpkg) & compile, also set Debug or Release
 # C-c C-t   Run tests
 # C-c C-d   Debug 
 
@@ -50,13 +50,13 @@ find_package(doctest REQUIRED)
 add_library(lib ${source_files})
 
 # add resource file to build directory
-configure_file("${PROJECT_SOURCE_DIR}/resources/arial.ttf" "${PROJECT_SOURCE_DIR}/build/arial.ttf" COPYONLY)
+# configure_file("${PROJECT_SOURCE_DIR}/resources/arial.ttf" "${PROJECT_SOURCE_DIR}/build/arial.ttf" COPYONLY)
 
 # build executable targets
 add_executable(main ${PROJECT_SOURCE_DIR}/src/main.cpp)
 add_executable(tests ${test_files})
 
 # link library targets to executables
-target_link_libraries(lib TBB::tbb ${SFML_LIBRARIES} ImGui-SFML::ImGui-SFML)
-target_link_libraries(main lib)
-target_link_libraries(tests PRIVATE lib)
+target_link_libraries(lib fmt::fmt TBB::tbb ${SFML_LIBRARIES} ImGui-SFML::ImGui-SFML)
+target_link_libraries(main lib) 
+target_link_libraries(tests PRIVATE doctest::doctest lib)
