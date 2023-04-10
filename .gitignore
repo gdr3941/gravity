@@ -4,5 +4,4 @@ perf.data.old
 .ccls-cache/
 build/**
 bin/**
-/.vscode/
 .DS_Store
