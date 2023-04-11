@@ -129,6 +129,9 @@ void handleEvents(World& world)
             case sf::Keyboard::LBracket:
                 scaleView(world, 1.2);
                 break;
+            case sf::Keyboard::Escape:
+                world.window->close();
+                break;
             default:
                 break;
             }
