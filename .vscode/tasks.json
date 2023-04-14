@@ -7,6 +7,16 @@
 			"command": "${workspaceFolder}/build/tests",
 			"problemMatcher": [],
 			"group": "test",
+		},
+		{
+			"type": "shell",
+			"label": "Build & Run",
+			"command": "cmake --build build && build/main",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [],
+			"group": "test",
 		}
 	]
 }
