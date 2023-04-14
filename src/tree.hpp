@@ -11,6 +11,7 @@ struct TreeNode {
     float right {0.0f}; // exclusive
     float bottom {0.0f}; // inclusive
     float top {0.0f}; // exclusive
+    sf::Vector2f center {0.0f, 0.0f};
     sf::Vector2f center_mass;
     float total_mass {0.0f};
     float max_radius {0.0f}; // largest radius of element / children
@@ -20,13 +21,10 @@ struct TreeNode {
     explicit TreeNode(float extent) : TreeNode(-extent, extent, -extent, extent) {}
 
     explicit TreeNode(float left, float right, float bottom, float top)
-        : left {left}, right {right}, bottom {bottom}, top {top} {}
+        : left {left}, right {right}, bottom {bottom}, top {top}, 
+        center {left + (right - left) / 2.0f, bottom + (right - left) / 2.0f} {}
 
     inline float nodeWidth() const { return right - left;}
-
-    inline sf::Vector2f center() const {
-        return {left + nodeWidth() / 2.0f, bottom + nodeWidth() / 2.0f};
-    }
 
     inline bool contains(sf::Vector2f pos) const {
         return (pos.x >= left && pos.x < right && pos.y >= bottom && pos.y < top);

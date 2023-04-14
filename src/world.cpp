@@ -61,7 +61,7 @@ void processCollisionTree(const World& world, const TreeNode& node, Rock& a)
             return;
         }
     }
-    sf::Vector2f pos_v = node.center() - a.pos;
+    sf::Vector2f pos_v = node.center - a.pos;
     float dist2 = pos_v.x * pos_v.x + pos_v.y * pos_v.y;
     // actual max from center inside a node is 1/sqrt(2) * node width
     // yet to make math faster, just using width as worst case
@@ -124,6 +124,8 @@ void updateTreeSystem(World& world)
 
 void updateCollisionSystemTree(World& world)
 {
+    // This is bottleneck
+    util::Timer timer;
     for (Rock& rock : world.rocks) {
         processCollisionTree(world, world.rootTree, rock);
     }
