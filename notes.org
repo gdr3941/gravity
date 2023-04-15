@@ -1,5 +1,9 @@
 * Inbox
 
+** [2023-04-15] New Collision detection
+Implemented a parrallel approach that first scans for all collisions in parrallel and then does the processing on a single thread.
+This was dramatically faster than the old approach
+
 ** Switched to vcpkg
 Much better and simpler for loading dependancies
 vcpkg.json is the manifest of libraries needed
