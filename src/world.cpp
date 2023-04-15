@@ -52,54 +52,6 @@ sf::Vector2f gravityAccelTree(const World& world, const TreeNode& node, const Ro
     }
 }
 
-void processCollisionTree(const World& world, const TreeNode& node, Rock& a)
-{
-    if (node.element) {
-        if (node.element <= &a) return; // prevents repeating pairs
-        if (isColliding(a, *node.element)) {
-            updateForCollision(a, *node.element);
-            return;
-        }
-    }
-    sf::Vector2f pos_v = node.center - a.pos;
-    float dist2 = pos_v.x * pos_v.x + pos_v.y * pos_v.y;
-    // actual max from center inside a node is 1/sqrt(2) * node width
-    // yet to make math faster, just using width as worst case
-    float sum_radius = node.max_radius + node.nodeWidth() + a.radius;
-    if (dist2 > (sum_radius * sum_radius)) {
-        // means far enough away can ignore
-        return;
-    } else if (node.hasChildren()) {
-        for (const auto& child : node.children) {
-            processCollisionTree(world, child, a);
-        }
-    } 
-}
-
-// Use simpler check to see if node is close enough to worry about
-void processCollisionTree2(const World& world, const TreeNode& node, Rock& a)
-{
-    if (node.element) {
-        if (node.element <= &a) return; // prevents repeating pairs
-        if (isColliding(a, *node.element)) {
-            updateForCollision(a, *node.element);
-            return;
-        }
-    }
-    float sr = node.max_radius + a.radius;
-    if (a.pos.x < (node.left-sr) || a.pos.x > (node.right+sr) || a.pos.y < (node.bottom-sr) || a.pos.y > (node.top+sr)) {
-        // means far enough away can ignore
-        return;
-    } else if (node.hasChildren()) {
-        for (const auto& child : node.children) {
-            processCollisionTree2(world, child, a);
-        }
-    } 
-}
-
-// Idea: could we do parallel check for collisions, then when done, process 
-// Actual collisions on single thread
-// Testing new idea
 void checkForCollisions(World& world, const TreeNode& node, Rock& a)
 {
     if (node.element) {
@@ -167,15 +119,6 @@ void updateTreeSystem(World& world)
     }
 }
 
-// This is bottleneck, see new par version below
-void updateCollisionSystemTree(World& world)
-{
-    for (Rock& rock : world.rocks) {
-        processCollisionTree2(world, world.rootTree, rock);
-    }
-}
-
-// Much faster!!
 void updateCollisionSystemPar(World& world)
 {
     // util::Timer timer;

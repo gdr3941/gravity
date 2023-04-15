@@ -41,11 +41,7 @@ void deleteAllRocks(World& world);
 
 void updateTreeSystem(World& world);
 
-void updateCollisionSystem(World& world);
-
 void updateCollisionSystemPar(World& world);
-
-void updateCollisionSystemTree(World& world);
 
 void updateGravitySystem(World& world, float timestep);
 
