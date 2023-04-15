@@ -10,7 +10,8 @@
 // Simulation World that holds Entities and Config
 //
 
-using Queue = moodycamel::ConcurrentQueue<std::pair<Rock*,Rock*>>;
+using CollidingPair = std::pair<Rock*,Rock*>;
+using Queue = moodycamel::ConcurrentQueue<CollidingPair>;
 
 struct World {
     std::vector<Rock> rocks;  // abstract objects in world

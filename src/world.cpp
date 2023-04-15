@@ -182,9 +182,9 @@ void updateCollisionSystemPar(World& world)
     tbb::parallel_for_each(world.rocks, [&world](Rock& a) {
         checkForCollisions(world, world.rootTree, a);
     });
-    std::pair <Rock*, Rock*> inCollision;
-    while (world.collisions.try_dequeue(inCollision)) {
-       updateForCollision(*inCollision.first, *inCollision.second);
+    CollidingPair cp;
+    while (world.collisions.try_dequeue(cp)) {
+       updateForCollision(*cp.first, *cp.second);
     }
 }
 
