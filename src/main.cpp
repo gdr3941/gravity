@@ -183,7 +183,8 @@ void run()
         sf::Time delta = clock.restart();
         updateTreeSystem(world);
         updateGravitySystemTree(world, delta.asSeconds());
-        updateCollisionSystemTree(world);
+        // updateCollisionSystemTree(world);
+        updateCollisionSystemPar(world); // This is much faster
         updateRockPositionSystem(world, delta.asSeconds());
         updateShapeSystem(world);
         window.clear();

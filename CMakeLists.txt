@@ -44,6 +44,7 @@ find_package(SFML REQUIRED system window graphics network audio)
 find_package(imgui REQUIRED)
 find_package(ImGui-SFML CONFIG REQUIRED)
 find_package(doctest REQUIRED)
+find_package(unofficial-concurrentqueue CONFIG REQUIRED)
 
 # create the application library target that has all code except main. This enables building the
 # main and test executables seperately without compiling application twice.
@@ -57,6 +58,6 @@ add_executable(main ${PROJECT_SOURCE_DIR}/src/main.cpp)
 add_executable(tests ${test_files})
 
 # link library targets to executables
-target_link_libraries(lib fmt::fmt TBB::tbb ${SFML_LIBRARIES} ImGui-SFML::ImGui-SFML)
+target_link_libraries(lib fmt::fmt TBB::tbb ${SFML_LIBRARIES} ImGui-SFML::ImGui-SFML unofficial::concurrentqueue::concurrentqueue)
 target_link_libraries(main lib) 
 target_link_libraries(tests PRIVATE doctest::doctest lib)
