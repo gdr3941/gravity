@@ -3,7 +3,8 @@
         {
             "name": "Mac",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/build/vcpkg_installed/arm64-osx/include"
             ],
             "defines": [],
             "macFrameworkPath": [
@@ -12,7 +13,8 @@
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c17",
             "intelliSenseMode": "macos-clang-arm64",
-            "configurationProvider": "ms-vscode.cmake-tools"
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "cppStandard": "c++23"
         }
     ],
     "version": 4
