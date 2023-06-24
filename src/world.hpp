@@ -29,6 +29,8 @@ struct World {
         : window {window}, rootTree {TreeNode(worldExtent)}, collisions {10000} {};
 };
 
+void addRock(World& world, Rock rock);
+
 void addRandomRocks(World& world, size_t numRocks, RockConfig rockConfig);
 
 void addSatRocks(World& world);

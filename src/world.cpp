@@ -79,6 +79,14 @@ void checkForCollisions(World& world, const TreeNode& node, Rock& a)
 // General Functions
 //
 
+void addRock(World& world, Rock rock)
+{
+    world.rocks.reserve(world.rocks.size() + 1);
+    world.shapes.reserve(world.shapes.size() + 1);
+    world.rocks.push_back(rock);
+    world.shapes.push_back(shapeFor(rock));
+}
+
 void addRandomRocks(World& world, size_t numRocks, RockConfig rockConfig)
 {
     world.rocks.reserve(world.rocks.size() + numRocks);

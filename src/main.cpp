@@ -106,6 +106,15 @@ void handleEvents(World& world)
         if (event.type == sf::Event::Resized) {
             handleResize(world, event.size.width, event.size.height);
         }
+        if (event.type == sf::Event::MouseButtonPressed) {
+            sf::Vector2i pix = sf::Mouse::getPosition(*world.window);
+            sf::Vector2f cor = world.window->mapPixelToCoords(pix);
+            addRock(world,
+                    Rock{.pos.x = cor.x,
+                         .pos.y = -cor.y,
+                         .radius = 10.0f,
+                         .mass = 100000});
+        }
         if (event.type == sf::Event::KeyPressed) {
             switch (event.key.code) {
             case sf::Keyboard::Equal:
@@ -140,6 +149,16 @@ void handleEvents(World& world)
     }
 }
 
+// Unused for now - was thinking of using to drag a heavy object around
+void handleMouse(World& world) 
+{
+    if (!sf::Mouse::isButtonPressed(sf::Mouse::Left)) return;
+    // sf::Vector2i pix = sf::Mouse::getPosition(*world.window);
+    // sf::Vector2f cor = world.window->mapPixelToCoords(pix);
+    // std::cout << "mouse pressed at " << cor.x << ", " << cor.y << "\n";
+    // addRock(world, Rock {.pos.x = cor.x, .pos.y=-cor.y, .radius = 10.0f, .mass = 100});
+}
+
 //
 // Run Loop
 //
@@ -166,9 +185,9 @@ void testTree()
 
 void run()
 {
-    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Gravity");
+    sf::RenderWindow window(sf::VideoMode(1600, 1000), "Gravity");
     window.setFramerateLimit(60);
-    sf::View view (sf::Vector2f(0,0), sf::Vector2f(250,250));
+    sf::View view (sf::Vector2f(0,0), sf::Vector2f(400,250));
     window.setView(view);
     bool success = ImGui::SFML::Init(window);
     loadFonts();
@@ -180,6 +199,7 @@ void run()
     sf::Clock clock;
     while (window.isOpen()) {
         handleEvents(world);
+        handleMouse(world);
         sf::Time delta = clock.restart();
         updateTreeSystem(world);
         updateGravitySystemTree(world, delta.asSeconds());
