@@ -23,11 +23,11 @@ void loadFonts()
 {
     ImGuiIO& io = ImGui::GetIO();
     io.Fonts->Clear();
-    #ifdef __linux__
+    // #ifdef __linux__
     io.Fonts->AddFontFromFileTTF("resources/arial.ttf", 14.0f);
-    #else
-    io.Fonts->AddFontFromFileTTF("resources/arial.ttf", 26.0f);
-    #endif
+    // #else
+    // io.Fonts->AddFontFromFileTTF("resources/arial.ttf", 18.0f);
+    // #endif
     bool success = ImGui::SFML::UpdateFontTexture();
 }
 
@@ -166,9 +166,9 @@ void testTree()
 
 void run()
 {
-    sf::RenderWindow window(sf::VideoMode(1500, 1500), "Gravity");
+    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Gravity");
     window.setFramerateLimit(60);
-    sf::View view (sf::Vector2f(0,0), sf::Vector2f(200,200));
+    sf::View view (sf::Vector2f(0,0), sf::Vector2f(250,250));
     window.setView(view);
     bool success = ImGui::SFML::Init(window);
     loadFonts();
