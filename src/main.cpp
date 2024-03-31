@@ -106,15 +106,15 @@ void handleEvents(World& world)
         if (event.type == sf::Event::Resized) {
             handleResize(world, event.size.width, event.size.height);
         }
-        // if (event.type == sf::Event::MouseButtonPressed) {
-        //     sf::Vector2i pix = sf::Mouse::getPosition(*world.window);
-        //     sf::Vector2f cor = world.window->mapPixelToCoords(pix);
-        //     addRock(world,
-        //             Rock{.pos.x = cor.x,
-        //                  .pos.y = -cor.y,
-        //                  .radius = 10.0f,
-        //                  .mass = 100000});
-        // }
+        if (event.type == sf::Event::MouseButtonPressed) {
+            sf::Vector2i pix = sf::Mouse::getPosition(*world.window);
+            sf::Vector2f cor = world.window->mapPixelToCoords(pix);
+            addRock(world,
+                    Rock{.pos = {cor.x, -cor.y},
+                         .vel = {0, 0},
+                         .radius = 10.0f,
+                         .mass = 100000});
+        }
         if (event.type == sf::Event::KeyPressed) {
             switch (event.key.code) {
             case sf::Keyboard::Equal:
